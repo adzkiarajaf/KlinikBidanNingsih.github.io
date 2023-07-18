@@ -47,89 +47,136 @@
 
 @push('scripts')
 <script>
-    let table;
-
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('user.data') }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'name'},
-                {data: 'email'},
-                {data: 'level'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
+    function editForm(url) {
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Edit User');
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('put');
+    $('#modal-form [name=name]').focus();
+    $('#password, #password_confirmation').attr('required', false);
+    $.get(url)
+        .done((response) => {
+            $('#modal-form [name=name]').val(response.name);
+            $('#modal-form [name=email]').val(response.email);
+        })
+        .fail((errors) => {
+            // Menampilkan SweetAlert dengan pesan gagal
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Tidak dapat menampilkan data user.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
-
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
+    // Menambahkan event listener untuk klik tombol "Simpan"
+    $('#btnSimpan').on('click', function () {
+        // Validasi input
+        var name = $('#modal-form [name=name]').val();
+        var email = $('#modal-form [name=email]').val();
+        var password = $('#modal-form [name=password]').val();
+        var password_confirmation = $('#modal-form [name=password_confirmation]').val();
+        
+        if (!name || !email || !password || !password_confirmation) {
+            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Semua input harus terisi',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+        
+        if (password !== password_confirmation) {
+            // Menampilkan SweetAlert dengan pesan kesalahan password tidak sesuai
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Password tidak sesuai',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+        
+        // Melakukan aksi penyimpanan data ke server
+        $.ajax({
+            url: $('#modal-form form').attr('action'),
+            method: 'POST',
+            data: $('#modal-form form').serialize(),
+            success: function (response) {
+                // Menampilkan SweetAlert dengan pesan sukses
+                Swal.fire({
+                    title: 'User Berhasil Diubah',
+                    text: 'User telah berhasil diubah.',
+                    icon: 'success'
+                }).then(() => {
+                    // Arahkan pengguna ke halaman index
+                    window.location.href = '{{ route('user.index') }}';
+                });
+                // Menutup modal
+                $('#modal-form').modal('hide');
+                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                // ...
+            },
+            error: function (xhr, status, error) {
+                // Menampilkan SweetAlert dengan pesan gagal
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat menyimpan data user.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
+}
 
-    function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah User');
 
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=name]').focus();
 
-        $('#password, #password_confirmation').attr('required', true);
-    }
-
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit User');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=name]').focus();
-
-        $('#password, #password_confirmation').attr('required', false);
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=name]').val(response.name);
-                $('#modal-form [name=email]').val(response.email);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
-            });
-    }
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+function deleteData(url) {
+        // Menampilkan SweetAlert konfirmasi sebelum menghapus data
+        Swal.fire({
+            title: 'Hapus Data',
+            text: 'Apakah Anda yakin ingin menghapus data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lakukan aksi penghapusan data ke server
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Menampilkan SweetAlert dengan pesan sukses
+                        Swal.fire({
+                            title: 'Data Terhapus',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+                        }).then(() => {
+                            // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                            window.location.href = '{{ route('user.index') }}';
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Menampilkan SweetAlert dengan pesan gagal
+                        Swal.fire({
+                            title: 'Kesalahan',
+                            text: 'Tidak dapat menghapus data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
-        }
+            }
+        });
     }
 </script>
 @endpush

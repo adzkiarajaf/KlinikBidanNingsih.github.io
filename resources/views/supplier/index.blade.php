@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="box-header with-border">
-    <button onclick="addForm('{{  route('supplier.store') }}')" class="btn btn-primary btn-xs btn-flat"><i class="fa fa-plus-circle" id="tambah"></i> Tambah </button>
+    <button onclick="addForm('{{  route('supplier.store') }}')" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus-circle" id="tambah"></i> Tambah </button>
 </div>
 <div class="list-group">
     <div class="list-group-item list-group-item-action active" aria-current="true">
@@ -32,86 +32,47 @@
 
 @push('scripts')
 <script>
-    let table;
+    function addForm(url) {
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Tambah Supplier');
 
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('supplier.data') }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'nama'},
-                {data: 'telepon'},
-                {data: 'alamat'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
-        });
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('post');
+    $('#modal-form [name=nama]').focus();
 
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
+    $('#btnSimpan').on('click', function() {
+        // Validasi input
+        var nama = $('#modal-form [name=nama]').val();
+        var alamat = $('#modal-form [name=alamat]').val();
+        var telepon = $('#modal-form [name=telepon]').val();
+
+        if (!nama || !alamat || !telepon) {
+            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Semua input harus terisi',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Menampilkan SweetAlert sebelum menyimpan data
+        Swal.fire({
+            title: 'Supplier Berhasil Ditambahkan',
+            text: 'Supplier baru telah berhasil ditambahkan.',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 4000 // Durasi tampilan pesan (dalam milidetik)
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                // Arahkan pengguna ke halaman index
+                window.location.href = '{{ route('supplier.index') }}';
             }
         });
     });
+}
 
-    function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah Supplier');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=nama]').focus();
-    }
-
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit Supplier');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=nama]').focus();
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=nama]').val(response.nama);
-                $('#modal-form [name=telepon]').val(response.telepon);
-                $('#modal-form [name=alamat]').val(response.alamat);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
-            });
-    }
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
-        }
-    }
 </script>
 @endpush

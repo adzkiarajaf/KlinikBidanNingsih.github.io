@@ -21,7 +21,7 @@
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img
-                            src="{{ asset('AdminLTE-2/dist/img/avatar3.png') }}"
+                            src="{{ asset('AdminLTE-2/dist/img/ava.jpg') }}"
                             class="user-image"
                             alt="User Image">
                             <span class="hidden-xs">{{  auth()->user()->name }}</span>
@@ -30,7 +30,7 @@
                             <!-- User image -->
                             <li class="user-header">
                                 <img
-                                    src="{{ asset('AdminLTE-2/dist/img/avatar3.png') }}"
+                                    src="{{ asset('AdminLTE-2/dist/img/ava.jpg') }}"
                                     class="img-circle"
                                     alt="User Image">
                                     <p style="color:rgb(26, 26, 65)">

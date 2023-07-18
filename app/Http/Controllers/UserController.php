@@ -52,7 +52,7 @@ class UserController extends Controller
         $user->level = 0;
         $user->save();
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->back();
     }
 
     /**
@@ -96,7 +96,7 @@ class UserController extends Controller
         $user->level = $request->level;
         $user->update();
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->back();
     }
 
     /**
@@ -145,7 +145,7 @@ class UserController extends Controller
 
         $user->update();
 
-        return response()->json($user, 200);
+        return redirect()->back();
     }
 
     public function penjualan()

@@ -41,86 +41,106 @@
 
 @push('scripts')
 <script>
-    let table;
+    function editForm(url) {
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Edit Supplier');
 
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('supplier.data') }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'nama'},
-                {data: 'telepon'},
-                {data: 'alamat'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('put');
+    $('#modal-form [name=nama]').focus();
+
+    $.get(url)
+        .done((response) => {
+            $('#modal-form [name=nama]').val(response.nama);
+            $('#modal-form [name=telepon]').val(response.telepon);
+            $('#modal-form [name=alamat]').val(response.alamat);
+        })
+        .fail((errors) => {
+            alert('Tidak dapat menampilkan data');
+            return;
         });
 
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
+    // Menambahkan event listener untuk klik tombol "Simpan"
+    $('#btnSimpan').on('click', function () {
+        // Melakukan aksi penyimpanan data ke server
+        $.ajax({
+            url: $('#modal-form form').attr('action'),
+            method: 'POST',
+            data: $('#modal-form form').serialize(),
+            success: function (response) {
+                // Menampilkan SweetAlert dengan pesan sukses
+                Swal.fire({
+                    title: 'Supplier Berhasil Diubah',
+                    text: 'Supplier telah berhasil diubah.',
+                    icon: 'success'
+                }).then(() => {
+                    // Arahkan pengguna ke halaman index
+                    window.location.href = '{{ route('supplier.index') }}';
+                });
+
+                // Menutup modal
+                $('#modal-form').modal('hide');
+
+                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                // ...
+            },
+            error: function (xhr, status, error) {
+                // Menampilkan SweetAlert dengan pesan gagal
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat menyimpan data supplier.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
+}
 
-    function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah Supplier');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=nama]').focus();
-    }
-
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit Supplier');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=nama]').focus();
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=nama]').val(response.nama);
-                $('#modal-form [name=telepon]').val(response.telepon);
-                $('#modal-form [name=alamat]').val(response.alamat);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
-            });
-    }
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+function deleteData(url) {
+        // Menampilkan SweetAlert konfirmasi sebelum menghapus data
+        Swal.fire({
+            title: 'Hapus Data',
+            text: 'Apakah Anda yakin ingin menghapus data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lakukan aksi penghapusan data ke server
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Menampilkan SweetAlert dengan pesan sukses
+                        Swal.fire({
+                            title: 'Data Terhapus',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+                        }).then(() => {
+                            // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                            window.location.href = '{{ route('supplier.index') }}';
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Menampilkan SweetAlert dengan pesan gagal
+                        Swal.fire({
+                            title: 'Kesalahan',
+                            text: 'Tidak dapat menghapus data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
-        }
+            }
+        });
     }
 </script>
 @endpush

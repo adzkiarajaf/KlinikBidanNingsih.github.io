@@ -75,12 +75,17 @@ class PenjualanController extends Controller
         $cartItems = session('cart');
         $total = 0;
 
-        foreach ($cartItems as $produk => $item) {
+        foreach ($cartItems as $produkId => $item) {
             $subtotal = $item['harga_jual'] * $item['quantity'];
             $total += $subtotal;
-
+            
+            // Mengurangi stok produk
+            $produk = Produk::findOrFail($produkId);
+            $produk->stok -= $item['quantity'];
+            $produk->update();
+        
             // Cek apakah entri penjualan sudah ada dalam database
-            $existingPenjualan = Penjualan::where('id_penjualan', $produk)->first();
+            $existingPenjualan = Penjualan::where('id_penjualan', $produkId)->first();
             if ($existingPenjualan) {
                 // Jika sudah ada, tambahkan jumlah item dan total harga
                 $existingPenjualan->total_item += $item['quantity'];
@@ -89,14 +94,14 @@ class PenjualanController extends Controller
             } else {
                 // Jika belum ada, buat entri baru
                 $penjualan = new Penjualan();
-                $penjualan->id_penjualan = $produk;
+                $penjualan->id_penjualan = $produkId;
                 $penjualan->total_harga = $subtotal;
                 $penjualan->total_item = $item['quantity'];
                 $penjualan->bayar = 0;
                 $penjualan->id_user = auth()->user()->id;
                 $penjualan->save();
             }
-        }
+        }        
 
         // Lanjutkan ke halaman pembayaran atau proses sesuai kebutuhan
         return redirect()->route('penjualan.checkout', ['total' => $total]);
@@ -207,9 +212,10 @@ class PenjualanController extends Controller
 
         $totalHargaTerbaru = $penjualanTerbaru->total_harga;
 
-        return view('penjualan.checkout', compact('totalHargaTerbaru'));
-    }
+        $total = $request->input('total'); // Definisikan variabel $total dan berikan nilai dari input form
 
+        return view('penjualan.checkout', compact('totalHargaTerbaru', 'total'));
+    }
 
     public function notaKecil(Request $request)
     {

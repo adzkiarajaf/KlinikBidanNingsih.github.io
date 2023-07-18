@@ -19,7 +19,7 @@
                         @foreach ($produk as $key => $item)
                             <tr>
                                 <td width="5%">{{ $key+1 }}</td>
-                                <td><span class="label label-success">{{ $item->kode_produk }}</span></td>
+                                <td><img src="{{ asset('img/' . $item->path_foto) }}" class="rounded float-start" style="width: 12%; margin-right: 10px;"></td>
                                 <td>{{ $item->nama_produk }}</td>
                                 <td>{{ $item->harga_beli }}</td>
                                 <td>

@@ -31,81 +31,128 @@
 
 @push('scripts')
 <script>
-    let table;
+    function editForm(url) {
+    // Mendapatkan ID dari URL menggunakan regex atau metode lainnya
+    var id_kategori = url.match(/\/(\d+)$/)[1];
 
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('kategori.data') }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'nama_kategori'},
-            ]
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Detail Kategori');
+
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('put');
+    $('#modal-form [name=nama_kategori]').focus();
+
+    // Menggunakan ID untuk mendapatkan data dari server
+    $.get(url)
+        .done((response) => {
+            $('#modal-form [name=nama_kategori]').val(response.nama_kategori);
+        })
+        .fail((errors) => {
+            // Menampilkan SweetAlert dengan pesan gagal
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Tidak dapat menampilkan data kategori.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
 
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
+        $('#btnSimpan').on('click', function () {
+        // Validasi input
+        var namaKategori = $('#modal-form [name=nama_kategori').val();
+        var idKategori = $('#modal-form [name=id_kategori]').val();
+
+        if (!namaKategori) {
+            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Semua input harus terisi',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Melakukan aksi penyimpanan data ke server
+        $.ajax({
+            url: $('#modal-form form').attr('action'),
+            method: 'POST',
+            data: $('#modal-form form').serialize(),
+            success: function (response) {
+                // Menampilkan SweetAlert dengan pesan sukses
+                Swal.fire({
+                    title: 'Kategori Berhasil Diubah',
+                    text: 'Kategori telah berhasil diubah.',
+                    icon: 'success'
+                }).then(() => {
+                    // Arahkan pengguna ke halaman index
+                    window.location.href = '{{ route('produk.index') }}';
+                });
+
+                // Menutup modal
+                $('#modal-form').modal('hide');
+
+                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                // ...
+            },
+            error: function (xhr, status, error) {
+                // Menampilkan SweetAlert dengan pesan gagal
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat menyimpan data kategori.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
-
-    function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah Kategori');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=nama_kategori]').focus();
     }
 
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit Kategori');
 
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=nama_kategori]').focus();
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=nama_kategori]').val(response.nama_kategori);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
-            });
-    }
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+function deleteData(url) {
+        // Menampilkan SweetAlert konfirmasi sebelum menghapus data
+        Swal.fire({
+            title: 'Hapus Data',
+            text: 'Apakah Anda yakin ingin menghapus data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lakukan aksi penghapusan data ke server
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Menampilkan SweetAlert dengan pesan sukses
+                        Swal.fire({
+                            title: 'Data Terhapus',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+                        }).then(() => {
+                            // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                            window.location.href = '{{ route('kategori.index') }}';
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Menampilkan SweetAlert dengan pesan gagal
+                        Swal.fire({
+                            title: 'Kesalahan',
+                            text: 'Tidak dapat menghapus data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
-        }
+            }
+        });
     }
 </script>
 @endpush

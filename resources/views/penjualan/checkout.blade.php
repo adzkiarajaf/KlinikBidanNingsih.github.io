@@ -31,7 +31,7 @@
                         <div class="col-xs-6">
                             <p class="lead mt-2">Jumlah</p>
                             <h3>Rp.
-                                {{ format_uang($totalHargaTerbaru) }}</h3>
+                                {{ format_uang($total) }}</h3>
                             <div class="form-group">
                                 <label for="uangDiterima" class="lead mt-2">Uang diterima</label>
                                 <input
@@ -50,12 +50,12 @@
                                 onclick="uangPas()">
                                 <i class="fa fa-money"></i>
                                 Uang Pas</button>
-                            <button class="btn btn-block btn-primary" type="submit" onclick="bayar()">
+                            <button class="btn btn-block btn-primary" type="submit" onclick="bayar()" id="bayar">
                                 <i class="fa fa-money"></i>
                                 Bayar</button>
                         </div>
                         <div class="box-footer">
-                            <button class="btn btn-warning btn-flat" onclick="notaKecil('{{ route('penjualan.nota_kecil') }}', 'Nota Kecil')">Cetak Ulang Nota</button>
+                            <button class="btn btn-warning btn-flat" onclick="notaKecil('{{ route('penjualan.nota_kecil') }}', 'Nota Kecil')"> Print Struk</button>
                         </div>
                     </div>
                 </div>
@@ -72,25 +72,54 @@
         popupCenter(url, title, 625, 500);
     }
 
-
     function uangPas() {
         var uangDiterima = document.getElementById('uangDiterima');
-        var totalHarga = {{ $totalHargaTerbaru }};
+        var totalHarga = {{ $total }};
         uangDiterima.value = totalHarga;
     }
 
     function bayar() {
         var uangDiterima = document.getElementById('uangDiterima').value;
-        var totalHarga = {{ $totalHargaTerbaru }};
-        if (uangDiterima >= totalHarga) {
-            // Proses pembayaran selesai
-            alert('Pembayaran selesai!');
-            // Tampilkan struk atau lakukan aksi lainnya
+        var totalHarga = {{ $total}};
+        var kembalian = uangDiterima - totalHarga;
+
+        if (uangDiterima == totalHarga) {
+            Swal.fire({
+                title: 'Pembayaran selesai!',
+                text: 'Terima kasih telah melakukan pembayaran.',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                // Tampilkan struk atau lakukan aksi lainnya setelah SweetAlert ditutup
+            });
+        } else if (uangDiterima > totalHarga) {
+            Swal.fire({
+                    title: 'Kembalian',
+                    text: 'Kembalian yang Anda terima: ' + kembalian,
+                    icon: 'info',
+                    timer: 2000,
+                    showConfirmButton: false
+            }).then(() => {
+                Swal.fire({
+                    title: 'Pembayaran selesai!',
+                    text: 'Terima kasih telah melakukan pembayaran.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: 'OK'
+                });
+                // Tampilkan struk atau lakukan aksi lainnya setelah SweetAlert ditutup
+            });
         } else {
-            // Jika jumlah bayar kurang dari total harga
-            alert('Jumlah bayar tidak mencukupi!');
+            Swal.fire({
+                title: 'Pembayaran kurang!',
+                text: 'Jumlah pembayaran Anda kurang dari total harga.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
         }
-    }
+}
+
 
     function popupCenter(url, title, w, h) {
         const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;

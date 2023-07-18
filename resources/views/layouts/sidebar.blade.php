@@ -5,7 +5,7 @@
         <div class="user-panel">
             <div class="pull-left image">
                 <img
-                    src="{{ asset('AdminLTE-2/dist/img/avatar3.png') }}"
+                    src="{{ asset('AdminLTE-2/dist/img/ava.jpg') }}"
                     class="img-circle"
                     alt="User Image"></div>
                 <div class="pull-left info">
@@ -83,28 +83,11 @@
                 </li>
                 @endif
                 @if (auth()->check() && auth()->user()->level == '0')
-                <li class="active treeview">
-                    <a href="#">
-                        <i class="fa fa-book"></i>
+                <li>
+                    <a href="{{ route('laporan.index') }}">
+                        <i class="fa fa-truck"></i>
                         <span>Laporan</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </span>
                     </a>
-                    <ul class="treeview-menu">
-                        <li>
-                            <a href="{{ route('laporan.index') }}">
-                                <i class="fa fa-file"></i>
-                                Laporan Pembelian
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('laporan.index') }}">
-                                <i class="fa fa-file-o"></i>
-                                Laporan Penjualan
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 @endif
             </ul>

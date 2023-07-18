@@ -25,7 +25,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-briefcase"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('user.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                     </div>
@@ -45,7 +45,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-clone"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('produk.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -65,7 +65,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-file-text-o"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('kategori.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -85,7 +85,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-refresh"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('restok.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -105,7 +105,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-pencil-square-o"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('pembelian.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -125,7 +125,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-book"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('laporan.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -145,7 +145,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-truck"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('supplier.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>
@@ -185,7 +185,7 @@
                                             <div class="icon">
                                                 <i class="fa fa-pencil-square-o"></i>
                                             </div>
-                                            <a href="#" class="small-box-footer">More info
+                                            <a href="{{ route('penjualan.index') }}" class="small-box-footer">More info
                                                 <i class="fa fa-arrow-circle-right"></i>
                                             </a>
                                         </div>

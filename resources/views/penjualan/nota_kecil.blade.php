@@ -80,12 +80,12 @@
                 <td class="text-right">Rp. 12.000</td>
             </tr>
             <tr>
-                <td colspan="3">Trimakal</td>
+                <td colspan="3">Hufagrip</td>
             </tr>
             <tr>
-                <td>2 x 50.000</td>
+                <td>2 x 35.000</td>
                 <td></td>
-                <td class="text-right">Rp. 100.000</td>
+                <td class="text-right">Rp. 70.000</td>
             </tr>
             <tr>
                 <td colspan="3">Kandistain</td>
@@ -101,7 +101,7 @@
     <table width="100%" style="border: 0;">
         <tr>
             <td>Total Harga:</td>
-            <td class="text-right">Rp.132.000</td>
+            <td class="text-right">Rp.112.000</td>
         </tr>
         <tr>
             <td>Total Item:</td>
@@ -109,11 +109,7 @@
         </tr>
         <tr>
             <td>Total Bayar:</td>
-            <td class="text-right">Rp.132.000</td>
-        </tr>
-        <tr>
-            <td>Diterima:</td>
-            <td class="text-right">Rp. 120.000</td>
+            <td class="text-right">Rp.112.000</td>
         </tr>
         <tr>
             <td>Kembali:</td>

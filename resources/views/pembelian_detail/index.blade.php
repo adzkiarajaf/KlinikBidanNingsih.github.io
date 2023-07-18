@@ -194,8 +194,26 @@
         });
 
         $('.btn-simpan').on('click', function () {
-            $('.form-pembelian').submit();
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin menyimpan data pembelian?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('.form-pembelian').submit();
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Data pembelian berhasil disimpan.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         });
+
     });
 
     function tampilProduk() {

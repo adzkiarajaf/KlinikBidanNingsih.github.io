@@ -8,6 +8,8 @@
         <meta
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
             name="viewport">
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('img/nurse.png') }}">
         <!-- Bootstrap 3.3.7 -->
         <link
             rel="stylesheet"
@@ -173,10 +175,20 @@
         <script src="{{ asset('AdminLTE-2/dist/js//validator.min.js') }}"></script>
         <!-- Sweet Alert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-        {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {{-- <script type="text/javascript">
+            $(function(){
+                $(document).on('click', '#bayar', function(e){
+                    e.preventDefault(); 
+                    var link = $(this).attr("onclik");
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"></script> --}}
+                    Swal.fire(
+                    'Good job!',
+                    'You clicked the button!',
+                    'success'
+                    )
+                });
+            })
+        </script> --}}
 
         <script>
             function preview(selector, temporaryFile, width = 200)  {

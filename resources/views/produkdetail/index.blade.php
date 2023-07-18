@@ -50,118 +50,144 @@
 
 @push('scripts')
 <script>
-    let table;
-
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('produk.data') }}',
-            },
-            columns: [
-                {data: 'select_all', searchable: false, sortable: false},
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'kode_produk'},
-                {data: 'foto'},
-                {data: 'nama_produk'},
-                {data: 'nama_kategori'},
-                {data: 'harga_jual'},
-                {data: 'stok'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
-        });
-
-        // $('#modal-form').validator().on('submit', function (e) {
-        //     if (! e.preventDefault()) {
-        //         console.log($('#modal-form form').serialize());
-        //         $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-        //             .done((response) => {
-        //                 $('#modal-form').modal('hide');
-        //                 table.ajax.reload();
-        //             })
-        //             .fail((errors) => {
-        //                 alert('Tidak dapat menyimpan data');
-        //                 return;
-        //             });
-        //     }
-        // });
-
-        $('[name=select_all]').on('click', function () {
-            $(':checkbox').prop('checked', this.checked);
-        });
-    });
-
-    function addForm(url) {
+    function editForm(url) {
     $('#modal-form').modal('show');
-    $('#modal-form .modal-title').text('Tambah Produk');
+    $('#modal-form .modal-title').text('Edit Produk');
+
     $('#modal-form form')[0].reset();
     $('#modal-form form').attr('action', url);
-    $('#modal-form [name=_method]').val('post');
+    $('#modal-form [name=_method]').val('put');
     $('#modal-form [name=nama_produk]').focus();
-    
 
-    $('.tampil-foto').empty();
-    }
-    
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit Produk');
+    // Menggunakan ID untuk mendapatkan data produk dari server
+    $.get(url)
+        .done((response) => {
+            $('#modal-form [name=nama_produk]').val(response.nama_produk);
+            $('#modal-form [name=id_kategori]').val(response.id_kategori);
+            $('#modal-form [name=harga_beli]').val(response.harga_beli);
+            $('#modal-form [name=harga_jual]').val(response.harga_jual);
+            $('#modal-form [name=stok]').val(response.stok);
+            $('#modal-form [name=path_foto]').val(response.path_foto);
 
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=nama_produk]').focus();
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=nama_produk]').val(response.nama_produk);
-                $('#modal-form [name=id_kategori]').val(response.id_kategori);
-                $('#modal-form [name=harga_beli]').val(response.harga_beli);
-                $('#modal-form [name=harga_jual]').val(response.harga_jual);
-                $('#modal-form [name=stok]').val(response.stok);
-                $('#modal-form [name=path_foto]').val(response.path_foto);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
+            // Menampilkan SweetAlert dengan pesan sukses setelah mendapatkan data produk
+            Swal.fire({
+                title: 'Data Produk Ditampilkan',
+                text: 'Data produk berhasil ditampilkan.',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 2000 // Durasi tampilan pesan (dalam milidetik)
             });
-    }
+        })
+        .fail((errors) => {
+            // Menampilkan SweetAlert dengan pesan gagal
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Tidak dapat menampilkan data produk.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
 
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
-        }
-    }
+    // Menambahkan event listener untuk klik tombol "Simpan"
+    $('#btnSimpan').on('click', function () {
+        // Validasi input
+        var namaProduk = $('#modal-form [name=nama_produk]').val();
+        var idKategori = $('#modal-form [name=id_kategori]').val();
+        var hargaBeli = $('#modal-form [name=harga_beli]').val();
+        var hargaJual = $('#modal-form [name=harga_jual]').val();
+        var stok = $('#modal-form [name=stok]').val();
+        var pathFoto = $('#modal-form [name=path_foto]').val();
 
-    function deleteSelected(url) {
-        if ($('input:checked').length > 1) {
-            if (confirm('Yakin ingin menghapus data terpilih?')) {
-                $.post(url, $('.form-produk').serialize())
-                    .done((response) => {
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menghapus data');
-                        return;
-                    });
-            }
-        } else {
-            alert('Pilih data yang akan dihapus');
+        if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok || !pathFoto) {
+            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Semua input harus terisi',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             return;
         }
+
+        // Melakukan aksi penyimpanan data ke server
+        $.ajax({
+            url: $('#modal-form form').attr('action'),
+            method: 'POST',
+            data: $('#modal-form form').serialize(),
+            success: function (response) {
+                // Menampilkan SweetAlert dengan pesan sukses
+                Swal.fire({
+                    title: 'Produk Berhasil Diubah',
+                    text: 'Produk telah berhasil diubah.',
+                    icon: 'success'
+                }).then(() => {
+                    // Arahkan pengguna ke halaman index
+                    window.location.href = '{{ route('produk.index') }}';
+                });
+
+                // Menutup modal
+                $('#modal-form').modal('hide');
+
+                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                // ...
+            },
+            error: function (xhr, status, error) {
+                // Menampilkan SweetAlert dengan pesan gagal
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat menyimpan data kategori.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+}
+
+
+function deleteData(url) {
+        // Menampilkan SweetAlert konfirmasi sebelum menghapus data
+        Swal.fire({
+            title: 'Hapus Data',
+            text: 'Apakah Anda yakin ingin menghapus data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lakukan aksi penghapusan data ke server
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        // Menampilkan SweetAlert dengan pesan sukses
+                        Swal.fire({
+                            title: 'Data Terhapus',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+                        }).then(() => {
+                            // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                            window.location.href = '{{ route('produk.index') }}';
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Menampilkan SweetAlert dengan pesan gagal
+                        Swal.fire({
+                            title: 'Kesalahan',
+                            text: 'Tidak dapat menghapus data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
     }
 </script>
 @endpush

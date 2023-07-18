@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="box-header with-border">
-    <button onclick="addForm('{{  route('kategori.store') }}')" class="btn btn-primary btn-xs btn-flat"><i class="fa fa-plus-circle" id="tambah"></i> Tambah </button>
+    <button onclick="addForm('{{  route('kategori.store') }}')" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus-circle"></i> Tambah Kategori </button>
 </div>
 <div class="list-group">
     <div class="list-group-item list-group-item-action active" aria-current="true">
@@ -59,43 +59,27 @@
     $('#modal-form form').attr('action', url);
     $('#modal-form [name=_method]').val('post');
     $('#modal-form [name=nama_kategori]').focus();
-    }
+
+    // Menambahkan event listener untuk klik tombol "Simpan"
+    $('#btnSimpan').on('click', function() {
+        // Menampilkan SweetAlert sebelum menyimpan data
+        Swal.fire({
+        title: 'Kategori Berhasil Ditambahkan',
+        text: 'Kategori baru telah berhasil ditambahkan.',
+        icon: 'success',
+        showConfirmButton: false,
+        timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+        }).then(() => {
+         // Arahkan pengguna ke halaman index
+        window.location.href = '{{ route('kategori.index') }}';
+        });
+    });
+}
 
     // Memindahkan pengalihan ke halaman index ke luar fungsi addForm()
     $('#modal-form').on('hidden.bs.modal', function () {
         redirectToIndex();
     });
 
-    function redirectToIndex() {
-        window.location.href = '{{ route('kategori.index') }}';
-    }
-
-
-    function editForm(url) {
-    // Mendapatkan ID dari URL menggunakan regex atau metode lainnya
-    var id_kategori = url.match(/\/(\d+)$/)[1];
-
-    $('#modal-form').modal('show');
-    $('#modal-form .modal-title').text('Detail Kategori');
-
-    $('#modal-form form')[0].reset();
-    $('#modal-form form').attr('action', url);
-    $('#modal-form [name=_method]').val('put');
-    $('#modal-form [name=nama_kategori]').focus();
-
-    // Menggunakan ID untuk mendapatkan data dari server
-    $.get(url)
-        .done((response) => {
-            $('#modal-form [name=nama_kategori]').val(response.nama_kategori);
-        })
-        .fail((errors) => {
-            alert('Tidak dapat menampilkan data');
-            return;
-        });
-    }
-    
-    function redirectToIndex() {
-    window.location.href = '{{ route('kategori.index') }}';
-    }
 </script>
 @endpush

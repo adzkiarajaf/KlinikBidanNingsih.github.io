@@ -43,114 +43,59 @@
 
 @push('scripts')
 <script>
-    let table;
-
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('produk.data') }}',
-            },
-            columns: [
-                {data: 'select_all', searchable: false, sortable: false},
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'kode_produk'},
-                {data: 'foto'},
-                {data: 'nama_produk'},
-                {data: 'nama_kategori'},
-                {data: 'harga_jual'},
-                {data: 'stok'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
-        });
-
-        // $('#modal-form').validator().on('submit', function (e) {
-        //     if (! e.preventDefault()) {
-        //         console.log($('#modal-form form').serialize());
-        //         $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-        //             .done((response) => {
-        //                 $('#modal-form').modal('hide');
-        //                 table.ajax.reload();
-        //             })
-        //             .fail((errors) => {
-        //                 alert('Tidak dapat menyimpan data');
-        //                 return;
-        //             });
-        //     }
-        // });
-
-        $('[name=select_all]').on('click', function () {
-            $(':checkbox').prop('checked', this.checked);
-        });
-    });
-
-    function addForm(url) {
+    function editForm(url) {
     $('#modal-form').modal('show');
-    $('#modal-form .modal-title').text('Tambah Produk');
+    $('#modal-form .modal-title').text('Restock');
+
     $('#modal-form form')[0].reset();
     $('#modal-form form').attr('action', url);
-    $('#modal-form [name=_method]').val('post');
+    $('#modal-form [name=_method]').val('put');
     $('#modal-form [name=nama_produk]').focus();
-    
 
-    $('.tampil-foto').empty();
-    }
-    
-        function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Restock');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=nama_produk]').focus();
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=stok]').val(response.stok);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
+    $.get(url)
+        .done((response) => {
+            $('#modal-form [name=stok]').val(response.stok);
+        })
+        .fail((errors) => {
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Tidak dapat menampilkan data',
+                icon: 'error',
+                confirmButtonText: 'OK'
             });
-    }
-
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
-        }
-    }
-
-    function deleteSelected(url) {
-        if ($('input:checked').length > 1) {
-            if (confirm('Yakin ingin menghapus data terpilih?')) {
-                $.post(url, $('.form-produk').serialize())
-                    .done((response) => {
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menghapus data');
-                        return;
-                    });
-            }
-        } else {
-            alert('Pilih data yang akan dihapus');
             return;
-        }
-    }
+        });
+
+    // Menambahkan event listener untuk klik tombol "Simpan"
+    $('#modal-form form').on('submit', function (e) {
+        e.preventDefault();
+
+        // Melakukan aksi restock ke server
+        $.ajax({
+            url: $('#modal-form form').attr('action'),
+            method: 'POST',
+            data: $('#modal-form form').serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: 'Berhasil',
+                    text: 'Restock berhasil dilakukan.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Arahkan pengguna ke halaman yang sesuai
+                    window.location.href = '{{ route('restok.index') }}';
+                });
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat melakukan restock.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+}
 </script>
 @endpush

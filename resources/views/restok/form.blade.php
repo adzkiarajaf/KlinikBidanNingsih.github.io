@@ -18,28 +18,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Simpan</button>
+                    <button class="btn btn-sm btn-primary" id="btnSimpan"><i class="fa fa-save"></i> Simpan</button>
                     <button type="button" class="btn btn-sm btn-warning" data-dismiss="modal"><i class="fa fa-arrow-circle-left"></i> Batal</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    function preview(selector, file, maxWidth) {
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = $('<img>').attr('src', e.target.result);
-                img.css('max-width', maxWidth + 'px');
-                $(selector).html(img);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            $(selector).empty();
-        }
-    }
-</script>
-@endpush

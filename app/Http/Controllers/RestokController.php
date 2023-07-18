@@ -102,7 +102,7 @@ class RestokController extends Controller
         $produk->stok = $request->input('stok');
         $produk->update();
 
-        return redirect()->route('restok.index')->with('success', 'Data berhasil disimpan');
+        return redirect()->back();
     }
 
 

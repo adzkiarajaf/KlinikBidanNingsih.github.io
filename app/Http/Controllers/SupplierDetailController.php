@@ -25,7 +25,7 @@ class SupplierDetailController extends Controller
     {
         $supplier = Supplier::find($id)->update($request->all());
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->route('supplierdetail.index');
     }
 
     /**

@@ -92,19 +92,38 @@
     }
 
     function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Yakin ingin menghapus data terpilih?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
             $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
+                '_token': $('[name=csrf-token]').attr('content'),
+                '_method': 'delete'
+            })
+            .done((response) => {
+                table.ajax.reload();
+                Swal.fire({
+                    title: 'Berhasil',
+                    text: 'Data terpilih berhasil dihapus.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
                 });
+            })
+            .fail((errors) => {
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Tidak dapat menghapus data.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
         }
-    }
+    });
+}
 </script>
 @endpush

@@ -57,89 +57,50 @@
 
 @push('scripts')
 <script>
-    let table;
+    // fungsi untuk menambahkan user
+    function addForm(url) {
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Tambah User');
 
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('user.data') }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'name'},
-                {data: 'email'},
-                {data: 'level'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ]
-        });
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('post');
+    $('#modal-form [name=name]').focus();
 
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
+    $('#password, #password_confirmation').attr('required', true);
+
+    $('#btnSimpan').on('click', function() {
+        // Periksa apakah semua input telah terisi
+        var isFormValid = true;
+        $('#modal-form form input').each(function() {
+            if ($(this).val() === '') {
+                isFormValid = false;
+                return false; // Hentikan perulangan jika ada input yang kosong
             }
         });
-    });
 
-    function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah User');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=name]').focus();
-
-        $('#password, #password_confirmation').attr('required', true);
-    }
-
-    function editForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit User');
-
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('put');
-        $('#modal-form [name=name]').focus();
-
-        $('#password, #password_confirmation').attr('required', false);
-
-        $.get(url)
-            .done((response) => {
-                $('#modal-form [name=name]').val(response.name);
-                $('#modal-form [name=email]').val(response.email);
-            })
-            .fail((errors) => {
-                alert('Tidak dapat menampilkan data');
-                return;
+        if (isFormValid) {
+            // Menampilkan SweetAlert jika semua input terisi
+            Swal.fire({
+                title: 'User Berhasil Ditambahkan',
+                text: 'User baru telah berhasil ditambahkan.',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 5000 // Durasi tampilan pesan (dalam milidetik)
+            }).then(() => {
+                // Arahkan pengguna ke halaman index
+                window.location.href = '{{ route('user.index') }}';
             });
-    }
-
-    function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload();
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
+        } else {
+            // Tampilkan pesan bahwa semua input harus diisi
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Harap isi semua field sebelum menyimpan data.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
-    }
+    });
+}
 </script>
 @endpush

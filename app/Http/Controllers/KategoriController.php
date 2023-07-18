@@ -109,7 +109,7 @@ class KategoriController extends Controller
         $kategori->update();
 
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->back();
     }
 
     /**

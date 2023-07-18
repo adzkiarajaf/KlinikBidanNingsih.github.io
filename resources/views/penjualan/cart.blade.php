@@ -57,7 +57,7 @@ $total = 0;
                 </td>
                 <td data-th="Harga">Rp. {{ format_uang($item['harga_jual']) }}</td>
                 <td data-th="quantity">
-                    <input type="number" value="{{ $item['quantity'] }}" class="form-control quantity cart_update" min="1">
+                    <input type="number" value="{{ $item['quantity'] }}" class="form-control quantity cart_update" min="1" data-id="{{ $produk }}">
                 </td>
                 <td data-th="subtotal" class="text-center" data-subtotal="{{ $subtotal }}">Rp. {{ format_uang($subtotal) }}</td>
                 <td class="actions" data-th="">
@@ -137,6 +137,21 @@ $(".cart_remove").click(function (e) {
             }
         });
     }
+});
+
+// Ambil elemen tombol menggunakan id atau selektor yang sesuai
+const btnTambahPenjualan = document.getElementById('btnTambahPenjualan');
+
+// Tambahkan event listener untuk klik
+btnTambahPenjualan.addEventListener('click', function() {
+    // Ambil nilai id_penjualan dari atribut data
+    const idPenjualan = btnTambahPenjualan.getAttribute('data-id-penjualan');
+
+    // Lakukan aksi yang diinginkan dengan id_penjualan
+    // Misalnya, kirim data ke backend atau lakukan pengoperasian lain
+
+    // Contoh tindakan: Tampilkan pesan dengan id_penjualan
+    alert('Id Penjualan yang ditambahkan: ' + idPenjualan);
 });
 </script>
 @endpush

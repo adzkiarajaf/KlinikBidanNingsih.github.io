@@ -43,7 +43,7 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::create($request->all());
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->route('supplier.index');
     }
 
     /**
@@ -59,37 +59,14 @@ class SupplierController extends Controller
         return response()->json($supplier);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $supplier = Supplier::find($id)->update($request->all());
+        $supplier = Supplier::find($id);
+        $supplier->update($request->all());
 
-        return response()->json('Data berhasil disimpan', 200);
+        return redirect()->route('supplier.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $supplier = Supplier::find($id)->delete();
