@@ -20,10 +20,12 @@
             <div class="box-body">
                 <div class="col-xs-6">
                     <p class="lead">Metode Pembayaran</p>
-                    <img
+                    <a href="">
+                        <img
                         src="{{ asset('AdminLTE-2/dist/img/qris.png') }}"
                         alt="Visa"
                         style="width: 20%; height:20%; margin-right: 10%">
+                    </a>
                         <img
                             src="{{ asset('AdminLTE-2/dist/img/dmpt.png') }}"
                             alt="Visa"
