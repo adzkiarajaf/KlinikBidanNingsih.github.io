@@ -52,19 +52,6 @@
     $('#modal-form [name=_method]').val('put');
     $('#modal-form [name=nama_produk]').focus();
 
-    $.get(url)
-        .done((response) => {
-            $('#modal-form [name=stok]').val(response.stok);
-        })
-        .fail((errors) => {
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Tidak dapat menampilkan data',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return;
-        });
 
     // Menambahkan event listener untuk klik tombol "Simpan"
     $('#modal-form form').on('submit', function (e) {
@@ -80,7 +67,8 @@
                     title: 'Berhasil',
                     text: 'Restock berhasil dilakukan.',
                     icon: 'success',
-                    confirmButtonText: 'OK'
+                    showConfirmButton: false,
+                    timer: 5000
                 }).then(() => {
                     // Arahkan pengguna ke halaman yang sesuai
                     window.location.href = '{{ route('restok.index') }}';
@@ -91,7 +79,8 @@
                     title: 'Kesalahan',
                     text: 'Tidak dapat melakukan restock.',
                     icon: 'error',
-                    confirmButtonText: 'OK'
+                    showConfirmButton: false,
+                    timer: 5000
                 });
             }
         });

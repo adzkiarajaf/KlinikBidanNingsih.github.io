@@ -112,6 +112,7 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('/penjualan/add_to_cart/{id}', [PenjualanController::class, 'addToCart'])->name('penjualan.add_to_cart');
     Route::patch('/penjualan/update-cart', [PenjualanController::class, 'update'])->name('update_cart');
     Route::patch('/penjualan/remove_from_cart', [PenjualanController::class, 'remove'])->name('remove_from_cart');  
+    Route::patch('/penjualan/bayar', [PenjualanController::class, 'bayar'])->name('bayar');  
     Route::get('/penjualan/cart', [PenjualanController::class, 'Cart'])->name('penjualan.cart');
     Route::get('/penjualan/checkout', [PenjualanController::class, 'checkout'])->name('penjualan.checkout');
     Route::get('/penjualan/nota-kecil', [PenjualanController::class, 'notaKecil'])->name('penjualan.nota_kecil');

@@ -1,6 +1,6 @@
 <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form">
     <div class="modal-dialog modal-lg" role="document">
-        <form action="{{ route('laporanpembelian.index') }}" method="get" data-toggle="modal" class="form-horizontal">
+        <form action="{{ route('laporan.index') }}" method="get" data-toggle="validator" class="form-horizontal">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -21,7 +21,7 @@
                         <label for="tanggal_akhir" class="col-lg-2 col-lg-offset-1 control-label">Tanggal Akhir</label>
                         <div class="col-lg-6">
                             <input type="text" name="tanggal_akhir" id="tanggal_akhir" class="form-control datepicker" required
-                                value="{{ request('tanggal_akhir') ?? date('dd/mm/yy') }}"
+                                value="{{ request('tanggal_akhir') ?? '2023/07/09' }}"
                                 style="border-radius: 0 !important;">
                             <span class="help-block with-errors"></span>
                         </div>
@@ -35,8 +35,3 @@
         </form>
     </div>
 </div>
-
-
-
-
-

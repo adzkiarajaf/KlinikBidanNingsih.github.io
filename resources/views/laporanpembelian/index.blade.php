@@ -7,7 +7,7 @@
 
 @section('breadcrumb')
     @parent
-    <li class="active"> Laporan Penjualan</li>
+    <li class="active"> Laporan Pembelian</li>
 @endsection
 
 @section('content')
@@ -42,8 +42,8 @@
             </button>
         </div>
     </div>
-    <div class="box-body">
-        Penjualan Harian
+    <div class="box-body" style="font-weight: bold; color: #72afd2;">
+        Penjualan Keseluruhan
     </div>
     <div class="box-footer">
         Total Nominal Transaksi
@@ -92,8 +92,8 @@
 @push('scripts')
 <script>
     $('.datepicker').datepicker({
-        format: 'yyyy-mm-dd',
-        autoclose: true
+            format: 'yyyy-mm-dd',
+            autoclose: true
     });
 
     function updatePeriode() {

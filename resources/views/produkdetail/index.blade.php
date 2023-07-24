@@ -35,12 +35,17 @@
                 <label for="disabledTextInput" class="form-label">Harga Jual</label>
                 <input type="text" id="disabledTextInput" class="form-control" value="{{ $produk->harga_jual }} -/pcs" readonly>
             </div>
+            <br>
+            <div class="mb-3">
+                <label for="disabledTextInput" class="form-label">Harga Beli</label>
+                <input type="text" id="disabledTextInput" class="form-control" value="{{ $produk->harga_beli }} -/pcs" readonly>
+            </div>
         </fieldset>
     </form>
 </div>
 <br>
 <div class="mb-3">
-    <button onclick="editForm('{{ route('produk.update', $produk->id_produk) }}')" class="btn btn-primary btn-block">Edit</button>
+    <button onclick="editForm('{{ route('produk.update', $produk->id_produk) }}', {{ $produk->id_produk }})" class="btn btn-primary btn-block">Edit</button>
     <button onclick="deleteData('{{ route('produk.destroy', $produk->id_produk) }}')" class="btn btn-primary btn-block">Hapus</button>
     <button onclick="window.location.href = '{{ route('produk.index') }}'" class="btn btn-success btn-block">Kembali Ke Produk</button>
 </div>
@@ -50,7 +55,7 @@
 
 @push('scripts')
 <script>
-    function editForm(url) {
+    function editForm(url, id_produk) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Edit Produk');
 
@@ -67,7 +72,20 @@
             $('#modal-form [name=harga_beli]').val(response.harga_beli);
             $('#modal-form [name=harga_jual]').val(response.harga_jual);
             $('#modal-form [name=stok]').val(response.stok);
-            $('#modal-form [name=path_foto]').val(response.path_foto);
+
+            // Tambahkan kode untuk menghapus atribut disabled pada input file foto
+            $('#modal-form [name=path_foto]').removeAttr('disabled');
+
+            // Menampilkan preview foto saat mengedit produk (jika ada foto)
+            var fotoProduk = response.path_foto;
+            var fotoPreviewSelector = '.tampil-foto';
+            if (fotoProduk) {
+                var img = $('<img>').attr('src', '{{ asset('img/') }}/' + fotoProduk);
+                img.css('max-width', '300px');
+                $(fotoPreviewSelector).html(img);
+            } else {
+                $(fotoPreviewSelector).empty();
+            }
 
             // Menampilkan SweetAlert dengan pesan sukses setelah mendapatkan data produk
             Swal.fire({
@@ -89,16 +107,17 @@
         });
 
     // Menambahkan event listener untuk klik tombol "Simpan"
-    $('#btnSimpan').on('click', function () {
+    $(document).off('click', '#btnSimpan').on('click', '#btnSimpan', function (event) {
+        event.preventDefault();
         // Validasi input
         var namaProduk = $('#modal-form [name=nama_produk]').val();
         var idKategori = $('#modal-form [name=id_kategori]').val();
         var hargaBeli = $('#modal-form [name=harga_beli]').val();
         var hargaJual = $('#modal-form [name=harga_jual]').val();
         var stok = $('#modal-form [name=stok]').val();
-        var pathFoto = $('#modal-form [name=path_foto]').val();
+        var pathFoto = $('#modal-form [name=path_foto]')[0].files[0]; // Ambil file foto yang diunggah
 
-        if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok || !pathFoto) {
+        if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok) {
             // Menampilkan SweetAlert dengan pesan kesalahan input kosong
             Swal.fire({
                 title: 'Kesalahan',
@@ -109,17 +128,31 @@
             return;
         }
 
+        // Membuat objek FormData untuk mengirim data termasuk file foto
+        var formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('nama_produk', namaProduk);
+        formData.append('id_kategori', idKategori);
+        formData.append('harga_jual', hargaJual);
+        formData.append('harga_beli', hargaBeli);
+        formData.append('stok', stok);
+        formData.append('path_foto', pathFoto);
+
         // Melakukan aksi penyimpanan data ke server
         $.ajax({
             url: $('#modal-form form').attr('action'),
             method: 'POST',
-            data: $('#modal-form form').serialize(),
+            data: formData,
+            contentType: false, // Set content type to false for file upload
+            processData: false, // Set processData to false for file upload
             success: function (response) {
                 // Menampilkan SweetAlert dengan pesan sukses
                 Swal.fire({
                     title: 'Produk Berhasil Diubah',
                     text: 'Produk telah berhasil diubah.',
-                    icon: 'success'
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 3000,
                 }).then(() => {
                     // Arahkan pengguna ke halaman index
                     window.location.href = '{{ route('produk.index') }}';
@@ -135,7 +168,7 @@
                 // Menampilkan SweetAlert dengan pesan gagal
                 Swal.fire({
                     title: 'Kesalahan',
-                    text: 'Tidak dapat menyimpan data kategori.',
+                    text: 'Tidak dapat menyimpan data produk.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });

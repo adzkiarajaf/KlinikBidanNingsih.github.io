@@ -58,7 +58,9 @@
             });
         });
 
-        $('#btnSimpan').on('click', function () {
+        $(document).on('click', '#btnSimpan', function (event) {
+        event.preventDefault(); // Menambahkan prevent default untuk mencegah form submit
+
         // Validasi input
         var namaKategori = $('#modal-form [name=nama_kategori').val();
         var idKategori = $('#modal-form [name=id_kategori]').val();
@@ -73,7 +75,6 @@
             });
             return;
         }
-
         // Melakukan aksi penyimpanan data ke server
         $.ajax({
             url: $('#modal-form form').attr('action'),
@@ -84,10 +85,12 @@
                 Swal.fire({
                     title: 'Kategori Berhasil Diubah',
                     text: 'Kategori telah berhasil diubah.',
-                    icon: 'success'
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 3000 // SweetAlert akan tampil selama 4 detik
                 }).then(() => {
-                    // Arahkan pengguna ke halaman index
-                    window.location.href = '{{ route('produk.index') }}';
+                    // Setelah SweetAlert tertampil selama 4 detik, arahkan pengguna ke halaman index
+                    window.location.href = '{{ route('kategori.index') }}';
                 });
 
                 // Menutup modal
@@ -107,7 +110,7 @@
             }
         });
     });
-    }
+}
 
 
 function deleteData(url) {

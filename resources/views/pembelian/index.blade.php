@@ -15,9 +15,6 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="addForm()" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Transaksi Baru</button>
-                @empty(! session('id_pembelian'))
-                <a href="{{ route('pembelian_detail.index') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-pencil"></i> Transaksi Aktif</a>
-                @endempty
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered table-pembelian">
@@ -71,7 +68,7 @@
             dom: 'Brt',
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'kode_produk'},
+                {data: 'path_foto'},
                 {data: 'nama_produk'},
                 {data: 'harga_beli'},
                 {data: 'jumlah'},

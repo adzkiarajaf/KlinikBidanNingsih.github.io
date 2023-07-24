@@ -15,7 +15,7 @@
 </div>
 <div class="list-group">
     <div class="list-group-item list-group-item-action active" aria-current="true">
-        Kategori
+        Supplier
     </div>
     <div class="list-group-item-action active">
         @foreach ($supplier as $index => $item)

@@ -27,10 +27,10 @@
                     </div>
                     <div class="form-group row">
                         <label for="level" class="col-lg-3 col-lg-offset-1 control-label">Role</label>
-                        <select class="form-selec col-lg-6" name="level" aria-label="Default select example">
-                        <option selected>Pilih Role</option>
-                        <option value="0">Owner</option>
-                        <option value="1">Kasir</option>
+                        <select class="form-selec col-lg-6" name="level" aria-label="Default select example" id="selectRole">
+                            <option selected> - </option>
+                            <option value="0">Owner</option>
+                            <option value="1">Kasir</option>
                         </select>
                     </div>
                     <div class="form-group row">

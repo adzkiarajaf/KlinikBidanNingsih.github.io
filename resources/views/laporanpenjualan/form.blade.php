@@ -21,7 +21,7 @@
                         <label for="tanggal_akhir" class="col-lg-2 col-lg-offset-1 control-label">Tanggal Akhir</label>
                         <div class="col-lg-6">
                             <input type="text" name="tanggal_akhir" id="tanggal_akhir" class="form-control datepicker" required
-                                value="{{ request('tanggal_akhir') ?? date('dd/mm/yy') }}"
+                                value="{{ request('tanggal_akhir') ?? date('d/m/y') }}"
                                 style="border-radius: 0 !important;">
                             <span class="help-block with-errors"></span>
                         </div>
@@ -36,7 +36,20 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+    $(function () {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
 
+        // Get today's date in yyyy-mm-dd format
+        const today = new Date().toISOString().slice(0, 10);
 
-
+        // Set the default value of the "Tanggal Akhir" input field to today's date
+        $('#tanggal_akhir').val(today);
+    });
+</script>
+@endpush
 

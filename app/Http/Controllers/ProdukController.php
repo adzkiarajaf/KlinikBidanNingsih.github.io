@@ -134,20 +134,35 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $produk = Produk::findOrFail($id);;
-        $produk->update($request->all());
+        $produk = Produk::findOrFail($id);
 
+        // Update atribut-atribut lainnya
+        $produk->update([
+            'nama_produk' => $request->nama_produk,
+            'id_kategori' => $request->id_kategori,
+            'harga_jual' => $request->harga_jual,
+            'harga_beli' => $request->harga_beli,
+            'stok' => $request->stok,
+        ]);
+
+        // Periksa apakah ada foto baru diunggah
         if ($request->hasFile('path_foto')) {
             $file = $request->file('path_foto');
             $nama = 'foto-' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('/img'), $nama);
 
-            $produk->path_foto = "$nama";
+            // Hapus foto lama (jika ada) sebelum mengganti dengan foto baru
+            if ($produk->path_foto && file_exists(public_path('/img/' . $produk->path_foto))) {
+                unlink(public_path('/img/' . $produk->path_foto));
+            }
+
+            $produk->path_foto = $nama;
+            $produk->save();
         }
 
-        $produk->update();
         return redirect()->back();
     }
+
 
     /**
      * Remove the specified resource from storage.

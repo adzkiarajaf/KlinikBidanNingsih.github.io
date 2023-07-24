@@ -194,27 +194,16 @@
         });
 
         $('.btn-simpan').on('click', function () {
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menyimpan data pembelian?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
                     $('.form-pembelian').submit();
                     Swal.fire({
                         title: 'Berhasil',
                         text: 'Data pembelian berhasil disimpan.',
                         icon: 'success',
-                        confirmButtonText: 'OK'
+                        showCancelButton: false,
+                        timer: 5000
                     });
-                }
+                })
             });
-        });
-
-    });
 
     function tampilProduk() {
         $('#modal-produk').modal('show');
@@ -244,21 +233,45 @@
     }
 
     function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val()));
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
-        }
-    }
+    // Menggunakan SweetAlert untuk konfirmasi
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Yakin ingin menghapus data terpilih?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika konfirmasi "Ya", maka hapus data dengan mengirimkan request POST ke URL yang ditentukan
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'delete'
+                    })
+                    .done((response) => {
+                        // Jika data berhasil dihapus, reload tabel dan loadForm dengan diskon saat ini
+                        table.ajax.reload(() => loadForm($('#diskon').val()));
 
+                        // Tampilkan pesan sukses menggunakan SweetAlert
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: 'Data berhasil dihapus.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .fail((errors) => {
+                        // Jika terjadi kesalahan saat menghapus data, tampilkan pesan error menggunakan SweetAlert
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Tidak dapat menghapus data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
+        });
+    }
     function loadForm(diskon = 0) {
         $('#total').val($('.total').text());
         $('#total_item').val($('.total_item').text());

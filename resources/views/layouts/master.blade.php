@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ config ('app.name') }} | @yield('title')</title>
+        <title>{{ config ('app.name') }}
+            | @yield('title')</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -53,9 +54,13 @@
             href="{{ asset('AdminLTE-2/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
 
         <!-- Data Table -->
-        <link rel="stylesheet" href="{{ asset('AdminLTE-2/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
+        <link
+            rel="stylesheet"
+            href="{{ asset('AdminLTE-2/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
 
-        <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/datatables.min.css" rel="stylesheet"/>
+        <link
+            href="https://cdn.datatables.net/v/bs5/dt-1.13.4/datatables.min.css"
+            rel="stylesheet"/>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
         -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -65,7 +70,7 @@
         <!-- Google Font -->
         <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Metal&display=swap" rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Metal&display=swap">
 
         @stack('css')
     </head>
@@ -163,8 +168,10 @@
         <script
             src="{{ asset('AdminLTE-2/bower_components/fastclick/lib/fastclick.js') }}"></script>
         <!-- Data Table -->
-        <script src="{{ asset('AdminLTE-2/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('AdminLTE-2/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+        <script
+            src="{{ asset('AdminLTE-2/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+        <script
+            src="{{ asset('AdminLTE-2/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
         <!-- AdminLTE App -->
         <script src="{{ asset('AdminLTE-2/dist/js/adminlte.min.js') }}"></script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
@@ -175,25 +182,16 @@
         <script src="{{ asset('AdminLTE-2/dist/js//validator.min.js') }}"></script>
         <!-- Sweet Alert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        {{-- <script type="text/javascript">
-            $(function(){
-                $(document).on('click', '#bayar', function(e){
-                    e.preventDefault(); 
-                    var link = $(this).attr("onclik");
-
-                    Swal.fire(
-                    'Good job!',
-                    'You clicked the button!',
-                    'success'
-                    )
-                });
-            })
-        </script> --}}
+        <!-- Include Bootstrap Datepicker -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
         <script>
-            function preview(selector, temporaryFile, width = 200)  {
+            function preview(selector, temporaryFile, width = 200) {
                 $(selector).empty();
-                $(selector).append(`<img src="${window.URL.createObjectURL(temporaryFile)}" width="${width}">`);
+                $(selector).append(
+                    `<img src="${window.URL.createObjectURL(temporaryFile)}" width="${width}">`
+                );
             }
         </script>
         @stack('scripts')

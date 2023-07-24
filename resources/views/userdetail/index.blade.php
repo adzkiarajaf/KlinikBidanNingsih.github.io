@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Kategori
+    User
 @endsection
 
 @section('breadcrumb')
@@ -42,23 +42,37 @@
     <button onclick="deleteData('{{ route('user.destroy', $user->id) }}')" class="btn btn-primary btn-block">Hapus</button>
 </div>
 
-@includeIf('user.form')
+@if ($user->level === 1)
+    @includeIf('user.form')
+@elseif ($user->level === 0)
+    @includeIf('user.formowner')
+@endif
 @endsection
 
 @push('scripts')
 <script>
     function editForm(url) {
-    $('#modal-form').modal('show');
-    $('#modal-form .modal-title').text('Edit User');
-    $('#modal-form form')[0].reset();
-    $('#modal-form form').attr('action', url);
-    $('#modal-form [name=_method]').val('put');
-    $('#modal-form [name=name]').focus();
-    $('#password, #password_confirmation').attr('required', false);
-    $.get(url)
+        $('#modal-form').modal('show');
+        $('#modal-form .modal-title').text('Edit User');
+        $('#modal-form form')[0].reset();
+        $('#modal-form form').attr('action', url);
+        $('#modal-form [name=_method]').val('put');
+        $('#modal-form [name=name]').focus();
+        $('#password, #password_confirmation').attr('required', false);
+
+        // Mengambil data user melalui AJAX
+        $.get(url)
         .done((response) => {
             $('#modal-form [name=name]').val(response.name);
             $('#modal-form [name=email]').val(response.email);
+
+            // Mengatur nilai inputan role berdasarkan level
+            var roleInput = $('#modal-form [name=level]');
+            if (response.level === '1') {
+                roleInput.val('Owner');
+            } else {
+                roleInput.val('Owner');
+            }
         })
         .fail((errors) => {
             // Menampilkan SweetAlert dengan pesan gagal
@@ -69,72 +83,74 @@
                 confirmButtonText: 'OK'
             });
         });
-    // Menambahkan event listener untuk klik tombol "Simpan"
-    $('#btnSimpan').on('click', function () {
-        // Validasi input
-        var name = $('#modal-form [name=name]').val();
-        var email = $('#modal-form [name=email]').val();
-        var password = $('#modal-form [name=password]').val();
-        var password_confirmation = $('#modal-form [name=password_confirmation]').val();
-        
-        if (!name || !email || !password || !password_confirmation) {
-            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Semua input harus terisi',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-        
-        if (password !== password_confirmation) {
-            // Menampilkan SweetAlert dengan pesan kesalahan password tidak sesuai
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Password tidak sesuai',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-        
-        // Melakukan aksi penyimpanan data ke server
-        $.ajax({
-            url: $('#modal-form form').attr('action'),
-            method: 'POST',
-            data: $('#modal-form form').serialize(),
-            success: function (response) {
-                // Menampilkan SweetAlert dengan pesan sukses
-                Swal.fire({
-                    title: 'User Berhasil Diubah',
-                    text: 'User telah berhasil diubah.',
-                    icon: 'success'
-                }).then(() => {
-                    // Arahkan pengguna ke halaman index
-                    window.location.href = '{{ route('user.index') }}';
-                });
-                // Menutup modal
-                $('#modal-form').modal('hide');
-                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
-                // ...
-            },
-            error: function (xhr, status, error) {
-                // Menampilkan SweetAlert dengan pesan gagal
+
+        // Menambahkan event listener untuk klik tombol "Simpan"
+        $(document).on('click', '#btnSimpan', function (event) {
+        event.preventDefault();
+            // Validasi input
+            var name = $('#modal-form [name=name]').val();
+            var email = $('#modal-form [name=email]').val();
+            var password = $('#modal-form [name=password]').val();
+            var password_confirmation = $('#modal-form [name=password_confirmation]').val();
+            
+            if (!name || !email || !password || !password_confirmation) {
+                // Menampilkan SweetAlert dengan pesan kesalahan input kosong
                 Swal.fire({
                     title: 'Kesalahan',
-                    text: 'Tidak dapat menyimpan data user.',
+                    text: 'Semua input harus terisi',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
+                return;
             }
+            
+            if (password !== password_confirmation) {
+                // Menampilkan SweetAlert dengan pesan kesalahan password tidak sesuai
+                Swal.fire({
+                    title: 'Kesalahan',
+                    text: 'Password tidak sesuai',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            
+            // Melakukan aksi penyimpanan data ke server
+            $.ajax({
+                url: $('#modal-form form').attr('action'),
+                method: 'POST',
+                data: $('#modal-form form').serialize(),
+                success: function (response) {
+                    // Menampilkan SweetAlert dengan pesan sukses
+                    Swal.fire({
+                        title: 'User Berhasil Diubah',
+                        text: 'User telah berhasil diubah.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 5000
+                    }).then(() => {
+                        // Arahkan pengguna ke halaman index
+                        window.location.href = '{{ route('user.index') }}';
+                    });
+                    // Menutup modal
+                    $('#modal-form').modal('hide');
+                    // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
+                    // ...
+                },
+                error: function (xhr, status, error) {
+                    // Menampilkan SweetAlert dengan pesan gagal
+                    Swal.fire({
+                        title: 'Kesalahan',
+                        text: 'Tidak dapat menyimpan data user.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         });
-    });
-}
+    }
 
-
-
-function deleteData(url) {
+    function deleteData(url) {
         // Menampilkan SweetAlert konfirmasi sebelum menghapus data
         Swal.fire({
             title: 'Hapus Data',

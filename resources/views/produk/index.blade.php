@@ -46,28 +46,44 @@
 @push('scripts')
 <script>
     function addForm(url) {
-        $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah Produk');
-        $('#modal-form form')[0].reset();
-        $('#modal-form form').attr('action', url);
-        $('#modal-form [name=_method]').val('post');
-        $('#modal-form [name=nama_produk]').focus();
-        
-        $('.tampil-foto').empty();
-        
-        $('#btnSimpan').on('click', function() {
-            // Menampilkan SweetAlert sebelum menyimpan data
+    $('#modal-form').modal('show');
+    $('#modal-form .modal-title').text('Tambah Produk');
+    $('#modal-form form')[0].reset();
+    $('#modal-form form').attr('action', url);
+    $('#modal-form [name=_method]').val('post');
+    $('#modal-form [name=nama_produk]').focus();
+
+    $('.tampil-foto').empty();
+
+    $('#btnSimpan').on('click', function() {
+        // Check if any input fields are empty
+        var emptyFields = $('#modal-form form').find('input, select, textarea').filter(function() {
+            return !this.value.trim();
+        });
+
+        if (emptyFields.length > 0) {
+            // Show SweetAlert error message if any input fields are empty
             Swal.fire({
+                title: 'Harap isi semua inputan',
+                text: 'Pastikan semua inputan telah diisi sebelum menyimpan data.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+            return;
+        }
+        
+        // Menampilkan SweetAlert sebelum menyimpan data
+        Swal.fire({
             title: 'Produk Berhasil Ditambahkan',
             text: 'Produk baru telah berhasil ditambahkan.',
             icon: 'success',
             showConfirmButton: false,
             timer: 5000 // Durasi tampilan pesan (dalam milidetik)
-            }).then(() => {
+        }).then(() => {
             // Arahkan pengguna ke halaman index
             window.location.href = '{{ route('produk.index') }}';
-            });
         });
-    }
+    });
+}
 </script>
 @endpush

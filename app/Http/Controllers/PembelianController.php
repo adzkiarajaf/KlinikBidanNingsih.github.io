@@ -37,7 +37,7 @@ class PembelianController extends Controller
                 if ($pembelian->supplier) {
                     return $pembelian->supplier->nama;
                 } else {
-                    return 'N/A';
+                    return '-';
                 }
             })
             ->addColumn('aksi', function ($pembelian) {
@@ -93,8 +93,8 @@ class PembelianController extends Controller
         return datatables()
             ->of($detail)
             ->addIndexColumn()
-            ->addColumn('kode_produk', function ($detail) {
-                return '<span class="label label-success">'. $detail->produk->kode_produk .'</span>';
+            ->addColumn('path_foto', function ($detail) {
+                return '<img src="' . asset('img/' . $detail->produk->path_foto) . '" class="rounded float-start" style="width: 50%; margin-right: 10px;">'. $detail->produk->path_foto;
             })
             ->addColumn('nama_produk', function ($detail) {
                 return $detail->produk->nama_produk;

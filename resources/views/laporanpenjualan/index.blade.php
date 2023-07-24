@@ -42,7 +42,7 @@
             </button>
         </div>
     </div>
-    <div class="box-body">
+    <div class="box-body" style="font-weight: bold; color: #72afd2;">
         Penjualan Keseluruhan
     </div>
     <div class="box-footer">

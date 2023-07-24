@@ -89,11 +89,21 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+
+        // Memastikan data name dan email tetap di-update
         $user->name = $request->name;
         $user->email = $request->email;
-        if ($request->has('password') && $request->password != "") 
+
+        // Jika password tidak kosong, update password
+        if ($request->has('password') && $request->password != "") {
             $user->password = bcrypt($request->password);
-        $user->level = $request->level;
+        }
+
+        // Memastikan level tidak diubah jika level adalah 0 (Owner)
+        if ($user->level != 0) {
+            $user->level = $request->level;
+        }
+
         $user->update();
 
         return redirect()->back();

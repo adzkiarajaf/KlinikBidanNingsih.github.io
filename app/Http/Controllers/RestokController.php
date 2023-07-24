@@ -99,12 +99,19 @@ class RestokController extends Controller
     public function update(Request $request, $id)
     {
         $produk = Produk::find($id);
-        $produk->stok = $request->input('stok');
-        $produk->update();
 
-        return redirect()->back();
+        // Validasi input restock
+        $request->validate([
+            'stok' => 'required|integer|min:1',
+        ]);
+
+        // Tambahkan stok baru
+        $restockAmount = $request->input('stok');
+        $produk->stok += $restockAmount;
+        $produk->save();
+
+        return redirect()->back()->with('success', 'Stok berhasil ditambahkan');
     }
-
 
     /**
      * Remove the specified resource from storage.

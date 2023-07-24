@@ -9,6 +9,25 @@
     <li class="active">Pembayaran</li>
 @endsection
 
+<style>
+    /* Gambar akan diperbesar saat kursor diarahkan ke atas */
+    .hoverable-image:hover {
+        .hoverable-image {
+        transition: transform 0.3s;
+    }
+
+    .hoverable-image:hover {
+    transform: scale(1.1);
+    }
+
+    /* Untuk gambar responsif */
+    img {
+    max-width: 100%;
+    height: auto;
+    }
+    }
+</style>
+
 @section('content')
 @if(session('cart'))
 <div class="row">
@@ -20,16 +39,23 @@
             <div class="box-body">
                 <div class="col-xs-6">
                     <p class="lead">Metode Pembayaran</p>
-                    <a href="">
+                    <a href="#" onclick="showModal()">
                         <img
-                        src="{{ asset('AdminLTE-2/dist/img/qris.png') }}"
-                        alt="Visa"
-                        style="width: 20%; height:20%; margin-right: 10%">
+                            src="{{ asset('AdminLTE-2/dist/img/qris.png') }}"
+                            alt="Visa"
+                            class="hoverable-image"
+                            style="width: 20%; height: 10%; margin-right: 10%"
+                        >
                     </a>
+                    <a href="">
                         <img
                             src="{{ asset('AdminLTE-2/dist/img/dmpt.png') }}"
                             alt="Visa"
-                            style="width: 10%; height:20%"></div>
+                            class="hoverable-image"
+                            style="width: 10%; height: 10%"
+                        >
+                    </a>
+                        </div>
                         <div class="col-xs-6">
                             <p class="lead mt-2">Jumlah</p>
                             <h3>Rp.
@@ -64,6 +90,8 @@
             </div>
 @endif
 @endsection
+
+@includeIf('penjualan.bayar')
 
 @push('scripts')
 <script>
@@ -144,6 +172,10 @@
         );
 
         if (window.focus) newWindow.focus();
+    }
+
+    function showModal() {
+    $('#qrisModal').modal('show');
     }
 </script>
 @endpush

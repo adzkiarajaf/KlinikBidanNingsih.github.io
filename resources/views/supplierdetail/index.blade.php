@@ -62,7 +62,8 @@
         });
 
     // Menambahkan event listener untuk klik tombol "Simpan"
-    $('#btnSimpan').on('click', function () {
+    $(document).on('click', '#btnSimpan', function (event) {
+        event.preventDefault();
         // Melakukan aksi penyimpanan data ke server
         $.ajax({
             url: $('#modal-form form').attr('action'),
@@ -73,7 +74,9 @@
                 Swal.fire({
                     title: 'Supplier Berhasil Diubah',
                     text: 'Supplier telah berhasil diubah.',
-                    icon: 'success'
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 5000
                 }).then(() => {
                     // Arahkan pengguna ke halaman index
                     window.location.href = '{{ route('supplier.index') }}';

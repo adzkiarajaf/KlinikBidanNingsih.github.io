@@ -13,19 +13,7 @@
 <div class="box-header with-border">
     <button onclick="addForm('{{  route('user.store') }}')" class="btn btn-primary btn-xs btn-flat"><i class="fa fa-plus-circle" id="tambah"></i> Tambah </button>
 </div>
-{{-- <div class="list-group">
-    <div class="list-group-item list-group-item-action active" aria-current="true">
-        User
-    </div>
-    <div class="list-group-item-action active">
-        @foreach ($user as $index => $item)
-        <a href="{{ route('userdetail.index', ['id' => $item->id]) }}" class="list-group-item">
-            {{ $item->name }}
-            <i class="fa fa-chevron-right" aria-hidden="true" style="float: right;"></i>
-        </a>
-        @endforeach
-    </div>
-</div> --}}
+
 
 <ol class="list-group list-group-numbered">
     <?php foreach ($user as $index => $item): ?>
