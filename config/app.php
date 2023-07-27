@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Klinik Bidan Ningsih'),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://192.168.0.9:8000'),
+    'url' => env('APP_URL', 'https://klinikbidanningsih.fun/'),
 
     'asset_url' => env('ASSET_URL', null),
 

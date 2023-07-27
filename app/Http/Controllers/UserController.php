@@ -49,7 +49,12 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->level = 0;
+
+        // Ambil nilai level dari inputan form
+        $level = $request->input('level');
+        // Pastikan nilai level hanya 0 atau 1, jika tidak, set nilai default menjadi 0
+        $user->level = in_array($level, [0, 1]) ? $level : 0;
+
         $user->save();
 
         return redirect()->back();

@@ -35,6 +35,7 @@
     </thead>
     <tbody>
         @php
+        $totalqty = 0;
         $total = 0;
         @endphp
         @if(session('cart'))
@@ -42,6 +43,7 @@
                 @php
                 $subtotal = $item['harga_jual'] * $item['quantity'];
                 $total += $subtotal;
+                $totalqty += $item['quantity'];
                 @endphp
                 <tr data-id="{{ $produk }}">
                     <td data-th="Product">

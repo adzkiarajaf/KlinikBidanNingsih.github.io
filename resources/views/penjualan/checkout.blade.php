@@ -121,7 +121,7 @@
                 timer: 2000,
                 showConfirmButton: false
             }).then(() => {
-                // Tampilkan struk atau lakukan aksi lainnya setelah SweetAlert ditutup
+                
             });
         } else if (uangDiterima > totalHarga) {
             Swal.fire({
@@ -138,7 +138,7 @@
                     timer: 2000,
                     showConfirmButton: 'OK'
                 });
-                // Tampilkan struk atau lakukan aksi lainnya setelah SweetAlert ditutup
+                
             });
         } else {
             Swal.fire({

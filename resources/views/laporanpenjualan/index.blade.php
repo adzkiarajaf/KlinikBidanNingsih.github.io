@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div class="box-body">
-                @foreach ($penjualan as $key => $item)
+                @foreach ($penjualan->sortByDesc('created_at') as $key => $item)
                 <div class="box">
                     <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                     <h5>{{ tanggal_indonesia($item->created_at) }}</h5>
