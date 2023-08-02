@@ -28,6 +28,14 @@
             padding-top: 5px;
         }
     }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table {
+        width: 100%;
+        max-width: 100%;
+    }
 </style>
 @endpush
 
@@ -74,19 +82,19 @@
                         </div>
                     </div>
                 </form>
-
-                <table class="table table-stiped table-bordered table-pembelian">
-                    <thead>
-                        <th width="5%">No</th>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Harga</th>
-                        <th width="15%">Jumlah</th>
-                        <th>Subtotal</th>
-                        <th width="15%"><i class="fa fa-cog"></i></th>
-                    </thead>
-                </table>
-
+                <div class="table-responsive">
+                    <table class="table table-stiped table-bordered table-pembelian">
+                        <thead>
+                            <th width="5%">No</th>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Harga</th>
+                            <th width="15%">Jumlah</th>
+                            <th>Subtotal</th>
+                            <th width="15%"><i class="fa fa-cog"></i></th>
+                        </thead>
+                    </table>
+                </div>
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="tampil-bayar bg-primary"></div>

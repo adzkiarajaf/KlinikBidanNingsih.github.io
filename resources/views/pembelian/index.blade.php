@@ -67,14 +67,19 @@
             bSort: false,
             dom: 'Brt',
             columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'path_foto'},
-                {data: 'nama_produk'},
-                {data: 'harga_beli'},
-                {data: 'jumlah'},
-                {data: 'subtotal'},
+                { data: 'DT_RowIndex', searchable: false, sortable: false },
+                // {
+                //     data: 'path_foto',
+                //     render: function(data, type, row) {
+                //         return '<img src="/img/' + data + '"  width="100" height="100">';
+                //     }
+                // },
+                { data: 'nama_produk' },
+                { data: 'harga_beli' },
+                { data: 'jumlah' },
+                { data: 'subtotal' },
             ]
-        })
+        });
     });
 
     function addForm() {
@@ -83,7 +88,6 @@
 
     function showDetail(url) {
         $('#modal-detail').modal('show');
-
         table1.ajax.url(url);
         table1.ajax.reload();
     }
