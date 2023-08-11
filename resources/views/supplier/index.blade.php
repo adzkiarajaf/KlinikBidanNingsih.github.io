@@ -32,6 +32,22 @@
 
 @push('scripts')
 <script>
+    $(function () {
+        $('#modal-form').validator().on('submit', function (e) {
+            if (! e.preventDefault()) {
+                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
+                    .done((response) => {
+                        $('#modal-form').modal('hide');
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menyimpan data');
+                        return;
+                    });
+            }
+        });
+    });
+    
     function addForm(url) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Tambah Supplier');

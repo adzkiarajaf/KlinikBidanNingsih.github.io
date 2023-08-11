@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('title')
-    Daftar Produk
+    Cart 
 @endsection
 
 @section('breadcrumb')
     @parent
-    <li class="active">Daftar Produk</li>
+    <li class="active">Cart</li>
 @endsection
 
 <style>
@@ -23,7 +23,7 @@
     </a>
 </div>
 <form action="{{ route('penjualan.store') }}"></form>
-<table id="cart" class="table table-hover table-condensed">
+<table id="cart" class="table table-hover table-condensed table-penjualan">
     <thead>
         <tr>
             <th style="width:50%">Produk</th>

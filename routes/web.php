@@ -116,10 +116,15 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('/penjualan/cart', [PenjualanController::class, 'Cart'])->name('penjualan.cart');
     Route::get('/penjualan/checkout', [PenjualanController::class, 'checkout'])->name('penjualan.checkout');
     Route::get('/penjualan/nota-kecil', [PenjualanController::class, 'notaKecil'])->name('penjualan.nota_kecil');
+    Route::get('/penjualan/produk-by-kategori/{kategori}', [PenjualanController::class, 'produkByKategori'])->name('penjualan.produkByKategori');
+    Route::get('/penjualan/tunai', [PenjualanController::class, 'tunai'])->name('penjualan.tunai');
+    Route::get('/penjualan/qr', [PenjualanController::class, 'qr'])->name('penjualan.qr');
+    Route::post('/penjualan/processCheckout/{id_penjualan}', [PenjualanController::class,  'processCheckout'])->name('penjualan.processCheckout');
+    Route::get('/penjualan/remove_cart', [PenjualanController::class, 'remove_cart'])->name('penjualan.remove_cart');
+    Route::get('/penjualan/detail/{id}', [PenjualanController::class, 'showDetail'])->name('penjualan.detail');
     Route::resource('/penjualan', PenjualanController::class)
         ->except(['create']);
 
-    Route::post('/pembayaran', [PembayaranController::class, 'session'])->name('pembayaran.session');
         
     
     Route::get('/penjualan_detail/{id}', [PenjualanDetailController::class, 'index'])->name('penjualan_detail.index');

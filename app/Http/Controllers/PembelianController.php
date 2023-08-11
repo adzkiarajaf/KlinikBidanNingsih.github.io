@@ -22,7 +22,7 @@ class PembelianController extends Controller
         $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->get();
 
         return datatables()
-            ->of($pembelian)
+            ->of($pembelian)                 
             ->addIndexColumn()
             ->addColumn('total_item', function ($pembelian) {
                 return format_uang($pembelian->total_item);
@@ -92,10 +92,7 @@ class PembelianController extends Controller
 
         return datatables()
             ->of($detail)
-            ->addIndexColumn()
-            // ->addColumn('path_foto', function ($detail) {
-            //     return '<img src="' . asset('img/' . $detail->produk->path_foto) . '" class="rounded float-start" style="width: 50%; margin-right: 10px;">'. $detail->produk->path_foto;
-            // })            
+            ->addIndexColumn()   
             ->addColumn('nama_produk', function ($detail) {
                 return $detail->produk->nama_produk;
             })

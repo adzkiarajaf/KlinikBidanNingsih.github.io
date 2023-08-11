@@ -50,7 +50,6 @@ class ProdukDetailController extends Controller
             ->orderBy('kode_produk', 'asc')
             ->get();
 
-        // ... kode lainnya yang mungkin ada ...
 
         return $data;
     }

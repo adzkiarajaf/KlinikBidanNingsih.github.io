@@ -1,3 +1,9 @@
+<style>
+    .star-red {
+        color: red;
+    }
+</style>
+
 <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form">
     <div class="modal-dialog modal-lg" role="document">
         <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data">
@@ -10,16 +16,18 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group row">
-                        <label for="nama_produk" class="col-lg-3 control-label">Nama Produk</label>
+                        <label for="nama_produk" class="col-lg-3 control-label">Nama Produk<span class="star-red">*</span></label>
                         <div class="col-lg-9">
-                            <input type="text" name="nama_produk" id="nama_produk" class="form-control" required>
+                            <input type="text" name="nama_produk" id="nama_produk" class="form-control" required autofocus
+                                data-error="Nama Produk  harus diisi">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="id_kategori" class="col-lg-3 control-label">Kategori</label>
+                        <label for="id_kategori" class="col-lg-3 control-label">Kategori<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <select name="id_kategori" id="id_kategori" class="form-control" required>
+                            <select name="id_kategori" id="id_kategori" class="form-control" required autofocus
+                                data-error="kategori harus diisi">
                                 <option value="">Pilih Kategori</option>
                                 @foreach ($kategori as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
@@ -29,16 +37,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="harga_jual" class="col-lg-3 control-label">Harga Jual</label>
+                        <label for="harga_jual" class="col-lg-3 control-label">Harga Jual<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" required>
+                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" required autofocus
+                                data-error="Harga Jual harus diisi">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="harga_beli" class="col-lg-3 control-label">Harga Beli</label>
+                        <label for="harga_beli" class="col-lg-3 control-label">Harga Beli<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required>
+                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required autofocus
+                                data-error="Harga Beli harus diisi">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -50,7 +60,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="path_foto" class="col-lg-3 control-label">Foto Produk</label>
+                        <label for="path_foto" class="col-lg-3 control-label">Foto Produk<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
                             <input type="file" name="path_foto" id="path_foto" class="form-control" required onchange="preview('.tampil-foto', this.files[0], 300)">
                             <br>

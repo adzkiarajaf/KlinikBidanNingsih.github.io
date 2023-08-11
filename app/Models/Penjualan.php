@@ -15,8 +15,13 @@ class Penjualan extends Model
 
     protected $fillable = ['uuid', 'id_penjualan', 'total_harga', 'total_item', 'bayar', 'id_user'];
 
-    public function user()
+    public function kasir()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function penjualanDetail()
+    {
+        return $this->hasMany(PenjualanDetail::class, 'id_penjualan');
     }
 }

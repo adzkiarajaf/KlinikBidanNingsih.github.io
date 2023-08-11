@@ -62,24 +62,32 @@
 
     // Menambahkan event listener untuk klik tombol "Simpan"
     $('#btnSimpan').on('click', function() {
+        // Validasi form sebelum menyimpan data
+        var namaKategori = $('#modal-form [name=nama_kategori]').val();
+        if (!namaKategori) {
+            // Jika form masih kosong, tampilkan pesan kesalahan
+            Swal.fire({
+                title: 'Kesalahan',
+                text: 'Nama kategori harus diisi.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Jika form sudah diisi, lanjutkan dengan menyimpan data
         // Menampilkan SweetAlert sebelum menyimpan data
         Swal.fire({
-        title: 'Kategori Berhasil Ditambahkan',
-        text: 'Kategori baru telah berhasil ditambahkan.',
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 2000 // Durasi tampilan pesan (dalam milidetik)
+            title: 'Kategori Berhasil Ditambahkan',
+            text: 'Kategori baru telah berhasil ditambahkan.',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
         }).then(() => {
-         // Arahkan pengguna ke halaman index
-        window.location.href = '{{ route('kategori.index') }}';
+            // Arahkan pengguna ke halaman index
+            window.location.href = '{{ route('kategori.index') }}';
         });
     });
 }
-
-    // Memindahkan pengalihan ke halaman index ke luar fungsi addForm()
-    $('#modal-form').on('hidden.bs.modal', function () {
-        redirectToIndex();
-    });
-
 </script>
 @endpush

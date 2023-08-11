@@ -14,58 +14,115 @@ use PDF;
 class PenjualanController extends Controller
 {
     public function index()
-    {
-        $produk = Produk::all();
-        $kategori = Kategori::pluck('nama_kategori', 'id_kategori');
-        return view('penjualan.index', compact('produk', 'kategori'));
+{
+    $kategori = Kategori::all();
+
+    // Jika ada parameter kategori yang diberikan, ambil produk berdasarkan kategori
+    $kategoriId = request()->input('kategori');
+    if ($kategoriId) {
+        $produkByKategori = Produk::where('id_kategori', $kategoriId)->get();
+    } else {
+        $produkByKategori = Produk::all(); // Tampilkan semua produk jika tidak ada kategori yang dipilih
     }
 
-    public function create($id)
-    {
-        $penjualan = new Penjualan();
-        $penjualan->id_user = $id;
-        $penjualan->total_item  = 0;
-        $penjualan->total_harga = 0;
-        $penjualan->bayar       = 0;
-        $penjualan->save();
+    return view('penjualan.index', compact('kategori', 'produkByKategori'));
+}
 
-        session(['id_penjualan' => $penjualan->id_penjualan]);
-        session(['id_user' => $penjualan->id_user]);
+public function data()
+{
+    $penjualan = Penjualan::orderBy('id_penjualan', 'desc')->get();
 
-        return redirect()->route('penjualan_detail.index');
+    return datatables()
+        ->of($penjualan)                 
+        ->addIndexColumn()
+        ->addColumn('total_item', function ($penjualan) {
+            return format_uang($penjualan->total_item);
+        })
+        ->addColumn('total_harga', function ($penjualan) {
+            return 'Rp. '. format_uang($penjualan->total_harga);
+        })
+        ->addColumn('tanggal', function ($penjualan) {
+            return tanggal_indonesia($penjualan->created_at, false);
+        })
+        ->addColumn('metode', function ($penjualan) {
+            return ($penjualan->metode_pembayaran);
+        })
+        ->addColumn('kasir', function ($penjualan) {
+            return ($penjualan->nama_user);
+        })
+        ->addColumn('aksi', function ($penjualan) {
+            return '
+            <div class="btn-group">
+                <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
+                <button onclick="deleteData(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+            </div>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
+    
+public function store(Request $request)
+{
+    $cartItems = session('cart');
+    $total = 0;
+    $totalqty = 0;
+
+    foreach ($cartItems as $produkId => $item) {
+        $subtotal = $item['harga_jual'] * $item['quantity'];
+        $total += $subtotal;
+        $totalqty += $item['quantity'];
+
+        // Mengurangi stok produk
+        $produk = Produk::findOrFail($produkId);
+        $produk->stok -= $item['quantity'];
+        $produk->update();
     }
+
+    // Buat entri baru untuk penjualan
+    $penjualan = new Penjualan();
+    $penjualan->uuid = (string) Str::uuid();
+    $penjualan->id_penjualan = $penjualan->uuid;
+    $penjualan->total_harga = $total;
+    $penjualan->total_item = $totalqty;
+    $penjualan->bayar = 0;
+    $penjualan-> nama_user = auth()->user()->name;
+
+    $metodePembayaran = $request->input('metode_pembayaran');
+    session(['selected_metode_pembayaran' => $metodePembayaran]);
 
     
-    public function store(Request $request)
-    {
-        $cartItems = session('cart');
-        $total = 0;
-        $totalqty = 0;
 
-        foreach ($cartItems as $produkId => $item) {
-            $subtotal = $item['harga_jual'] * $item['quantity'];
-            $total += $subtotal;
-            $totalqty += $item['quantity'];
-            
-            // Mengurangi stok produk
-            $produk = Produk::findOrFail($produkId);
-            $produk->stok -= $item['quantity'];
-            $produk->update();
-            
-            // Buat entri baru untuk setiap produk dalam tabel 'penjualan'
-            $penjualan = new Penjualan();
-            $penjualan->uuid = (string) Str::uuid(); // Membuat UUID baru
-            $penjualan->id_penjualan = $penjualan->uuid; // Menggunakan UUID sebagai nilai id_penjualan
-            $penjualan->total_harga = $total;
-            $penjualan->total_item = $totalqty;
-            $penjualan->bayar = 0;
-            $penjualan->id_user = auth()->user()->id;
-            $penjualan->save();
-        }
-
-        // Lanjutkan ke halaman pembayaran atau proses sesuai kebutuhan
-        return redirect()->route('penjualan.checkout', ['total' => $total]);
+    // Pastikan metode pembayaran tidak kosong sebelum menyimpan
+    if ($metodePembayaran) {
+        $penjualan->metode_pembayaran = $metodePembayaran;
+    } else {
+        // Berikan nilai default jika metode pembayaran tidak ada
+        $penjualan->metode_pembayaran = 'default_value';
     }
+
+    $penjualan->save();
+
+    // Simpan detail penjualan
+    foreach ($cartItems as $produkId => $item) {
+        $detail = new PenjualanDetail();
+        $detail->id_penjualan = $penjualan->uuid; // Gunakan UUID dari penjualan
+        $detail->id_produk = $produkId; // Gunakan ID produk yang sesuai
+        $detail->harga_jual = $item['harga_jual'];
+        $detail->jumlah = $item['quantity'];
+        $detail->subtotal = $item['harga_jual'] * $item['quantity'];
+        $detail->save();
+    }
+
+    // Setelah melakukan semua operasi untuk menyimpan data, ambil nilai total dari objek $penjualan
+    $totalPenjualan = $penjualan->total_harga;
+
+    // Redirect ke halaman berikutnya dengan ID penjualan dan total
+    return redirect()->route('penjualan.checkout', [
+        'id_penjualan' => $penjualan->id_penjualan,
+        'total' => $totalPenjualan
+    ]);
+}
 
 
     public function destroy($id)
@@ -139,30 +196,116 @@ class PenjualanController extends Controller
 
     public function checkout(Request $request)
     {
-        $penjualanTerbaru = Penjualan::where('id_user', auth()->user()->id)
+        $penjualanTerbaru = Penjualan::where('nama_user', auth()->user()->name)
             ->latest()
             ->first();
-
+    
         $totalHargaTerbaru = $penjualanTerbaru->total_harga;
+    
+        $total = $request->input('total');
+    
+        return view('penjualan.checkout', compact('penjualanTerbaru', 'totalHargaTerbaru', 'total'));
+    }
 
-        $total = $request->input('total'); // Definisikan variabel $total dan berikan nilai dari input form
+    public function processCheckout(Request $request, $id_penjualan)
+    {
+        $penjualan = Penjualan::findOrFail($id_penjualan);
 
-        return view('penjualan.checkout', compact('totalHargaTerbaru', 'total'));
+        // Update metode pembayaran
+        $metode_pembayaran = $request->input('metode_pembayaran');
+        $penjualan->metode_pembayaran = $metode_pembayaran;
+
+        if ($metode_pembayaran !== 'qris') {
+            // Jika metode pembayaran bukan 'qris', update nilai "bayar"
+            $uang_diterima = $request->input('uangDiterima');
+            $penjualan->bayar = $uang_diterima;
+        }
+
+        $penjualan->save();
+    
+        return response()->json(['message' => 'Checkout berhasil'], 200);
     }
 
     public function notaKecil(Request $request)
     {
         $setting = Setting::first();
-        $id_penjualan = $request->session()->get('id_penjualan');
-        $produk = $request->session()->get('produk');
-        
-        // Cek nilai $id_penjualan
-        // dd($id_penjualan);
-        
-        $penjualan = Penjualan::find($id_penjualan);
-        
-        return view('penjualan.nota_kecil', compact('setting', 'id_penjualan', 'produk', 'penjualan'));
+        if (!$setting) {
+            $setting = new Setting();
+        }
+
+        // Mengambil data penjualan paling baru beserta detailnya menggunakan eager loading
+        $penjualan = Penjualan::with(['PenjualanDetail' => function ($query) {
+            $query->latest(); // Mengurutkan detail penjualan dari yang terbaru
+        }])->latest()->first();
+
+        if (!$penjualan) {
+            $id_penjualan = null;
+            $produk = null;
+            $detail = [];
+        } else {
+            $id_penjualan = $penjualan->id;
+            $produk = $request->session()->get('produk');
+            $detail = $penjualan->penjualanDetail;
+        }
+
+        return view('penjualan.nota_kecil', compact('setting', 'id_penjualan', 'produk', 'penjualan', 'detail'));
     }
 
+
+    public function kategori(Kategori $kategori)
+    {
+        $semuaproduk = $kategori->Produk()->get();
+        return $semuaproduk;
+    }
+
+    public function tunai(Request $request)
+    {
+        $penjualanTerbaru = Penjualan::select('bayar', 'total_harga')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $bayar = $penjualanTerbaru->bayar;
+        $totalHarga = $penjualanTerbaru->total_harga;
+        $kembalian = $bayar - $totalHarga;
+                
+        return view('penjualan.tunai', ['kembalian' => $kembalian]);
+    }
+
+    public function qr()
+    {
+        return view('penjualan.qr'); // Ganti dengan nama view yang sesuai
+    }
+
+    public function remove_cart()
+    {
+        // Lakukan tindakan untuk mengosongkan keranjang belanja di sini
+        session()->forget('cart'); // Menghapus data keranjang belanja dari session
+        session(['cart_count' => 0]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function showDetail($id)
+{
+    $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
+
+    return datatables()
+        ->of($detail)
+        ->addIndexColumn()
+        ->addColumn('nama_produk', function ($detail) {
+            return $detail->produk->nama_produk;
+        })
+        ->addColumn('harga_jual', function ($detail) {
+            return 'Rp. ' . format_uang($detail->harga_jual);
+        })
+        ->addColumn('jumlah', function ($detail) {
+            return format_uang($detail->jumlah);
+        })
+        ->addColumn('subtotal', function ($detail) {
+            return 'Rp. ' . format_uang($detail->subtotal);
+        })
+        ->rawColumns(['nama_produk'])
+        ->make(true);
+}
 
 }

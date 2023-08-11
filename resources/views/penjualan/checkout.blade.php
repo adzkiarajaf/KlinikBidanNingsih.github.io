@@ -26,6 +26,19 @@
     height: auto;
     }
     }
+
+    .custom-button {
+        border: 1px solid #3c8dbc;;
+        padding: 5px 10px;
+        margin-top: 10px;
+        font-size: 14px;
+        transition: background-color 0.3s, color 0.3s; /* Efek transisi perubahan warna */
+    }
+
+    .custom-button:hover {
+        background-color: #3c8dbc;; /* Warna latar belakang biru saat dihover */
+        color: white; /* Warna teks putih saat dihover */
+    }
 </style>
 
 @section('content')
@@ -57,44 +70,137 @@
                     </a>
                         </div>
                         <div class="col-xs-6">
+                            <form action="{{ route('penjualan.processCheckout', ['id_penjualan' => $penjualanTerbaru->uuid]) }}" method="POST" id="checkout-form">
+                                @csrf
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="metode_pembayaran" id="qris" value="qris"
+                                        {{ $penjualanTerbaru->metode_pembayaran === 'qris' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="qris">QRIS</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="metode_pembayaran" id="tunai" value="tunai"
+                                        {{ $penjualanTerbaru->metode_pembayaran === 'tunai' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="tunai">Tunai</label>
+                                </div>
+                                <input type="hidden" name="id_penjualan" value="{{ $penjualanTerbaru->id }}">
                             <p class="lead mt-2">Jumlah</p>
-                            <h3>Rp.
-                                {{ format_uang($total) }}</h3>
+                            <h3>Rp. {{ format_uang($total) }}</h3>
                             <div class="form-group">
                                 <label for="uangDiterima" class="lead mt-2">Uang diterima</label>
                                 <input
+                                    name="uangDiterima"
                                     type="number"
                                     class="form-control"
                                     id="uangDiterima"
                                     placeholder=""
-                                    required="required"></div>
+                                    required="required"
+                                    data-total="{{ $total }}">
                             </div>
+                            <button type="submit" class="custom-button btn-xs" id='update-button'>Simpan Metode Pembayaran</button>
+                            </form>
                         </div>
                         <div class="box-footer">
                             <button
                                 class="btn btn-block btn-primary"
-                                type="submit"
+                                type="button"
                                 id="checkout-live-button"
-                                onclick="uangPas()">
+                                onclick="uangPas()"
+                                disabled>
                                 <i class="fa fa-money"></i>
-                                Uang Pas</button>
-                            <button class="btn btn-block btn-primary" type="submit" onclick="bayar()" id="bayar">
+                                Uang Pas
+                            </button>
+                            <button class="btn btn-block btn-primary" type="submit" id="bayar">
                                 <i class="fa fa-money"></i>
-                                Bayar</button>
+                                Bayar
+                            </button>
                         </div>
-                        <div class="box-footer">
-                            <button class="btn btn-warning btn-flat" onclick="notaKecil('{{ route('penjualan.nota_kecil') }}', 'Nota Kecil')"> Print Struk</button>
                         </div>
-                    </div>
-                </div>
-            </div>
+                        </div>
+                        </div>
+                        </div>
 @endif
 @endsection
 
-@includeIf('penjualan.bayar')
+@includeIf('penjualan.modalqris')
+@includeIf('penjualan.modaltunai')
 
 @push('scripts')
 <script>
+    $('#checkout-form').submit(function(event) {
+        event.preventDefault();
+
+        var formData = $(this).serialize(); // Mengambil data formulir
+
+        $.ajax({
+            url: $(this).attr('action'), // Mengambil URL aksi dari formulir
+            type: $(this).attr('method'), // Mengambil metode aksi dari formulir
+            data: formData,
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Metode Pembayaran Berhasil Di Simpan',
+                    text: 'Silahkan Lanjutkan pembayaran.',
+                    showConfirmButton: false, // Tidak menampilkan tombol konfirmasi
+                    timer: 3000, // Menampilkan selama 5 detik
+                });
+
+                // Lakukan tindakan lain, jika perlu
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Terjadi kesalahan saat melakukan checkout.',
+                    showConfirmButton: false, // Tidak menampilkan tombol konfirmasi
+                    timer: 3000, // Menampilkan selama 5 detik
+                });
+            }
+        });
+    });
+
+    function setUangPasStatus() {
+    // Dapatkan elemen input uangDiterima
+    const uangDiterimaInput = document.getElementById('uangDiterima');
+
+    // Dapatkan elemen input metode_pembayaran
+    const metodePembayaranInput = document.getElementsByName('metode_pembayaran');
+
+    // Dapatkan tombol "Uang Pas"
+    const uangPasButton = document.getElementById('checkout-live-button');
+
+    // Dapatkan nilai total pembayaran dari atribut data-total pada elemen uangDiterima
+    const totalPembayaran = parseFloat(uangDiterimaInput.dataset.total);
+
+    // Dapatkan nilai metode_pembayaran yang dipilih
+    let metodePembayaran = '';
+    metodePembayaranInput.forEach(input => {
+        if (input.checked) {
+            metodePembayaran = input.value;
+        }
+    });
+
+    // Jika metode_pembayaran adalah 'qris', aktifkan tombol "Uang Pas" dan set nilai uangDiterima sama dengan total harga
+    // Jika metode_pembayaran adalah 'tunai', biarkan tombol "Uang Pas" non-aktif dan biarkan nilai uangDiterima kosong
+    if (metodePembayaran === 'qris') {
+        uangPasButton.disabled = true;
+        uangDiterimaInput.disabled = true; // Menonaktifkan input uangDiterima
+    } else {
+        uangPasButton.disabled = false;
+        uangDiterimaInput.value = '';
+        uangDiterimaInput.disabled = false; // Mengaktifkan kembali input uangDiterima
+    }
+}
+
+    // Tambahkan event listener untuk setiap elemen metode_pembayaran
+    const metodePembayaranInput = document.getElementsByName('metode_pembayaran');
+    metodePembayaranInput.forEach(input => {
+        input.addEventListener('change', setUangPasStatus);
+    });
+
+    // Jalankan fungsi setUangPasStatus saat halaman dimuat untuk pertama kali
+    setUangPasStatus();
+
     // tambahkan untuk delete cookie innerHeight terlebih dahulu
     document.cookie = "innerHeight=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     
@@ -107,48 +213,6 @@
         var totalHarga = {{ $total }};
         uangDiterima.value = totalHarga;
     }
-
-    function bayar() {
-        var uangDiterima = document.getElementById('uangDiterima').value;
-        var totalHarga = {{ $total}};
-        var kembalian = uangDiterima - totalHarga;
-
-        if (uangDiterima == totalHarga) {
-            Swal.fire({
-                title: 'Pembayaran selesai!',
-                text: 'Terima kasih telah melakukan pembayaran.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                
-            });
-        } else if (uangDiterima > totalHarga) {
-            Swal.fire({
-                    title: 'Kembalian',
-                    text: 'Kembalian yang Anda terima: ' + kembalian,
-                    icon: 'info',
-                    timer: 2000,
-                    showConfirmButton: false
-            }).then(() => {
-                Swal.fire({
-                    title: 'Pembayaran selesai!',
-                    text: 'Terima kasih telah melakukan pembayaran.',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: 'OK'
-                });
-                
-            });
-        } else {
-            Swal.fire({
-                title: 'Pembayaran kurang!',
-                text: 'Jumlah pembayaran Anda kurang dari total harga.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-        }
-}
 
 
     function popupCenter(url, title, w, h) {
@@ -174,8 +238,21 @@
         if (window.focus) newWindow.focus();
     }
 
-    function showModal() {
-    $('#qrisModal').modal('show');
+    document.addEventListener('DOMContentLoaded', function () {
+    const bayarButton = document.getElementById('bayar');
+    bayarButton.addEventListener('click', handleBayarClick);
+    });
+
+    function handleBayarClick(event) {
+        event.preventDefault(); // Menghentikan aksi bawaan tombol submit
+
+        const paymentMethod = document.querySelector('input[name="metode_pembayaran"]:checked').value;
+        if (paymentMethod === 'qris') {
+            $('#qrisModal').modal('show');
+        } else if (paymentMethod === 'tunai') {
+            // Navigasi ke halaman terakhir
+            window.location.href = "{{ route('penjualan.tunai') }}";
+        }
     }
 </script>
 @endpush

@@ -31,6 +31,22 @@
 
 @push('scripts')
 <script>
+    $(function () {
+        $('#modal-form').validator().on('submit', function (e) {
+            if (! e.preventDefault()) {
+                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
+                    .done((response) => {
+                        $('#modal-form').modal('hide');
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menyimpan data');
+                        return;
+                    });
+            }
+        });
+    });
+    
     function editForm(url) {
     // Mendapatkan ID dari URL menggunakan regex atau metode lainnya
     var id_kategori = url.match(/\/(\d+)$/)[1];

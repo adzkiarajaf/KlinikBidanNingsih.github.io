@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pembelian;
+use App\Models\PembelianDetail;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use PDF;
@@ -78,6 +79,29 @@ class LaporanPembelianController extends Controller
 
         return datatables()
             ->of($data)
+            ->make(true);
+    }
+
+    public function show($id)
+    {
+        $detail = PembelianDetail::with('produk')->where('id_pembelian', $id)->get();
+
+        return datatables()
+            ->of($detail)
+            ->addIndexColumn()       
+            ->addColumn('nama_produk', function ($detail) {
+                return $detail->produk->nama_produk;
+            })
+            ->addColumn('harga_beli', function ($detail) {
+                return 'Rp. '. format_uang($detail->harga_beli);
+            })
+            ->addColumn('jumlah', function ($detail) {
+                return format_uang($detail->jumlah);
+            })
+            ->addColumn('subtotal', function ($detail) {
+                return 'Rp. '. format_uang($detail->subtotal);
+            })
+            ->rawColumns(['kode_produk'])
             ->make(true);
     }
 }

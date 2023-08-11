@@ -20,17 +20,13 @@ class RestokController extends Controller
 
         
         $produk = Produk::all(); // Mengambil semua data produk dari model Produk
-
         $kategori = Kategori::pluck('nama_kategori', 'id_kategori'); // Mengambil semua data kategori dan membuat array dengan format [id_kategori => nama_kategori]
-
         return view('restok.index', compact('produk', 'kategori'));
         
     }
 
     public function store(Request $request)
     {
-        // Validasi dan pengaturan kode_produk
-
         $request->validate([
             'stok' => 'required|integer',
         ]);
@@ -100,18 +96,18 @@ class RestokController extends Controller
     {
         $produk = Produk::find($id);
 
-        // Validasi input restock
+        // Validasi input stok
         $request->validate([
-            'stok' => 'required|integer|min:1',
+            'stok' => 'required|integer|min:0', // Gunakan min:0 agar stok tidak boleh negatif
         ]);
 
-        // Tambahkan stok baru
-        $restockAmount = $request->input('stok');
-        $produk->stok += $restockAmount;
+        // Update stok produk
+        $produk->stok = $request->input('stok');
         $produk->save();
 
-        return redirect()->back()->with('success', 'Stok berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Stok berhasil diubah');
     }
+
 
     /**
      * Remove the specified resource from storage.

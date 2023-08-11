@@ -66,56 +66,52 @@
         <p style="float: right">{{ strtoupper(auth()->user()->name) }}</p>
     </div>
     <div class="clear-both" style="clear: both;"></div>
-    <p>No: KBN023723</p>
+    <p>No: KBN0082023</p>
     <p class="text-center">===================================</p>
     
     <br>
     <table width="100%" style="border: 0;">
-            <tr>
-                <td colspan="3">Vitamin Etabion</td>
-            </tr>
-            <tr>
-                <td>4 x 3000</td>
-                <td></td>
-                <td class="text-right">Rp. 12.000</td>
-            </tr>
-            <tr>
-                <td colspan="3">Hufagrip</td>
-            </tr>
-            <tr>
-                <td>2 x 35.000</td>
-                <td></td>
-                <td class="text-right">Rp. 70.000</td>
-            </tr>
-            <tr>
-                <td colspan="3">Kandistain</td>
-            </tr>
-            <tr>
-                <td>1 x 30.000</td>
-                <td></td>
-                <td class="text-right">Rp. 30.000</td>
-            </tr>
+        @foreach ($detail as $item)
+        <tr>
+            <td colspan="3">{{ $item->produk->nama_produk }}</td>
+        </tr>
+        <tr>
+            <td>{{ $item->jumlah }} x {{ format_uang($item->harga_jual) }}</td>
+            <td></td>
+            <td class="text-right">{{ format_uang($item->jumlah * $item->harga_jual) }}</td>
+        </tr>
+    @endforeach
     </table>
     <p class="text-center">-----------------------------------</p>
 
+    @if ($penjualan)
     <table width="100%" style="border: 0;">
         <tr>
             <td>Total Harga:</td>
-            <td class="text-right">Rp.112.000</td>
+            <td class="text-right">Rp. {{ format_uang($penjualan->total_harga) }}</td>
         </tr>
         <tr>
             <td>Total Item:</td>
-            <td class="text-right">7 item</td>
+            <td class="text-right"> {{ format_uang($penjualan->total_item) }} Item</td>
         </tr>
         <tr>
             <td>Total Bayar:</td>
-            <td class="text-right">Rp.112.000</td>
+            <td class="text-right">Rp. {{ format_uang($penjualan->bayar) }}</td>
         </tr>
         <tr>
-            <td>Kembali:</td>
-            <td class="text-right">-----</td>
+            <td>Kembalian:</td>
+            @if ($penjualan->metode_pembayaran == 'qris')
+                <td class="text-right"> - </td>
+            @else
+                <td class="text-right">Rp. {{ format_uang($penjualan->bayar - $penjualan->total_harga) }}</td>
+            @endif
+        </tr>
+        <tr>
+            <td>Metode Pembayaran:</td>
+            <td class="text-right">{{ $penjualan->metode_pembayaran }}</td>
         </tr>
     </table>
+    @endif
 
     <p class="text-center">===================================</p>
     <p class="text-center">-- TERIMA KASIH --</p>

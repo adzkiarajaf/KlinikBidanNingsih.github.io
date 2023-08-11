@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pembelian;
 use App\Models\Penjualan;
-use App\Models\Supplier;
+use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
 use PDF;
 
@@ -46,7 +45,7 @@ class LaporanPenjualanController extends Controller
             $awal = date('Y-m-d', strtotime("+1 day", strtotime($awal)));
 
             $total_penjualan = Penjualan::where('created_at', 'LIKE', "%$tanggal%")->sum('bayar');
-            $total_pembelian = Pembelian::where('created_at', 'LIKE', "%$tanggal%")->sum('bayar');
+            $total_pembelian = Penjualan::where('created_at', 'LIKE', "%$tanggal%")->sum('bayar');
 
             $pendapatan = $total_penjualan - $total_pembelian;
             $total_pendapatan += $pendapatan;

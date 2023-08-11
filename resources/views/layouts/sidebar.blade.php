@@ -17,12 +17,20 @@
             </div>
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
+                <li class="header">FITUR</li>
                 @if (auth()->check() && auth()->user()->level == '0')
                 <li>
                     <a href="{{ route('dashboard') }}">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+                @endif
+                @if (auth()->check() && auth()->user()->level == '1')
+                <li>
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Menu Utama</span>
                     </a>
                 </li>
                 @endif
@@ -85,7 +93,7 @@
                 @if (auth()->check() && auth()->user()->level == '0')
                 <li>
                     <a href="{{ route('laporan.index') }}">
-                        <i class="fa fa-truck"></i>
+                        <i class="fa fa-file-text" aria-hidden="true"></i>
                         <span>Laporan</span>
                     </a>
                 </li>
