@@ -89,6 +89,16 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script>
+    // Ambil elemen tombol menggunakan class yang sesuai
+    const checkoutButton = document.getElementById('checkout-live-button');
+
+    // Tambahkan event listener untuk klik
+    checkoutButton.addEventListener('click', function () {
+        // Reset jumlah item di tombol "Item" menjadi 0
+        const cartButton = document.querySelector('.btn-primary.btn-block.btn-flat');
+        cartButton.innerHTML = `<i class="fa fa-shopping-cart mr-3" aria-hidden="true"></i> 0 Item`;
+    });
+
     $(function () {
         $(".cart_update").change(function (e) {
             e.preventDefault();

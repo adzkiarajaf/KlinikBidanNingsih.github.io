@@ -19,8 +19,7 @@
                     <div class="form-group row">
                         <label for="nama_kategori" class="col-lg-2 col-lg-offset-1 control-label">Kategori <span class="star-red">*</span></label>
                         <div class="col-lg-6">
-                            <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" required autofocus
-                                data-error="Nama kategori harus diisi">
+                            <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" required autofocus oninvalid="this.setCustomValidity('Kategori harus diisi.')" oninput="setCustomValidity('')">
                             <div class="help-block with-errors"></div>
                         </div>                        
                     </div>

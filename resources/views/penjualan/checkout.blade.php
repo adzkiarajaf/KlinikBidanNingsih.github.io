@@ -82,38 +82,30 @@
                                         {{ $penjualanTerbaru->metode_pembayaran === 'tunai' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="tunai">Tunai</label>
                                 </div>
-                                <input type="hidden" name="id_penjualan" value="{{ $penjualanTerbaru->id }}">
-                            <p class="lead mt-2">Jumlah</p>
-                            <h3>Rp. {{ format_uang($total) }}</h3>
-                            <div class="form-group">
-                                <label for="uangDiterima" class="lead mt-2">Uang diterima</label>
-                                <input
-                                    name="uangDiterima"
-                                    type="number"
-                                    class="form-control"
-                                    id="uangDiterima"
-                                    placeholder=""
-                                    required="required"
-                                    data-total="{{ $total }}">
-                            </div>
-                            <button type="submit" class="custom-button btn-xs" id='update-button'>Simpan Metode Pembayaran</button>
+                                <p class="lead mt-2">Jumlah</p>
+                                <h3>Rp. {{ format_uang($total) }}</h3>
+                                <div class="form-group">
+                                    <label for="uangDiterima" class="lead mt-2">Uang diterima</label>
+                                    <input
+                                        name="uangDiterima"
+                                        type="number"
+                                        class="form-control"
+                                        id="uangDiterima"
+                                        placeholder=""
+                                        required="required"
+                                        data-total="{{ $total }}">
+                                </div>
+                                <button class="custom-button btn-block btn-primary" id='bayar' type="submit">Bayar</button>
                             </form>
-                        </div>
-                        <div class="box-footer">
-                            <button
-                                class="btn btn-block btn-primary"
-                                type="button"
-                                id="checkout-live-button"
-                                onclick="uangPas()"
-                                disabled>
-                                <i class="fa fa-money"></i>
-                                Uang Pas
-                            </button>
-                            <button class="btn btn-block btn-primary" type="submit" id="bayar">
-                                <i class="fa fa-money"></i>
-                                Bayar
-                            </button>
-                        </div>
+                                <button
+                                    class="btn btn-block btn-primary"
+                                    type="button"
+                                    id="checkout-live-button"
+                                    onclick="uangPas()"
+                                    disabled>
+                                    <i class="fa fa-money"></i>
+                                    Uang Pas
+                                </button>
                         </div>
                         </div>
                         </div>
@@ -126,38 +118,66 @@
 
 @push('scripts')
 <script>
-    $('#checkout-form').submit(function(event) {
-        event.preventDefault();
+    function handleBayarClick(event) {
+    event.preventDefault(); // Mencegah pengiriman formulir default
 
-        var formData = $(this).serialize(); // Mengambil data formulir
+    const paymentMethod = document.querySelector('input[name="metode_pembayaran"]:checked').value;
+    const uangDiterima = parseFloat(document.getElementById('uangDiterima').value);
 
-        $.ajax({
-            url: $(this).attr('action'), // Mengambil URL aksi dari formulir
-            type: $(this).attr('method'), // Mengambil metode aksi dari formulir
-            data: formData,
-            success: function(response) {
+    // Anda harus melakukan validasi uangDiterima di sini sebelum melanjutkan
+
+    const formData = new FormData(document.getElementById('checkout-form'));
+
+    // Tambahkan metode pembayaran dan uangDiterima ke data formulir
+    formData.append('metode_pembayaran', paymentMethod);
+    formData.append('uangDiterima', uangDiterima);
+
+    // Gunakan fetch atau jQuery.ajax untuk mengirimkan data formulir ke sisi server
+    fetch('{{ route("penjualan.processCheckout", ["id_penjualan" => $penjualanTerbaru->uuid]) }}', {
+        method: 'POST',
+        body: formData
+    })
+    
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (paymentMethod === 'qris') {
+                // Tampilkan modal QRIS
+                $('#qrisModal').modal('show');
+            } else if (paymentMethod === 'tunai') {
+                // Alihkan ke halaman pembayaran tunai
+                window.location.href = '{{ route("penjualan.tunai") }}';
+            } else {
+                // Tangani kasus lain atau tampilkan pesan sukses
                 Swal.fire({
                     icon: 'success',
                     title: 'Metode Pembayaran Berhasil Di Simpan',
                     text: 'Silahkan Lanjutkan pembayaran.',
-                    showConfirmButton: false, // Tidak menampilkan tombol konfirmasi
-                    timer: 3000, // Menampilkan selama 5 detik
-                });
-
-                // Lakukan tindakan lain, jika perlu
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Terjadi kesalahan saat melakukan checkout.',
-                    showConfirmButton: false, // Tidak menampilkan tombol konfirmasi
-                    timer: 3000, // Menampilkan selama 5 detik
+                    showConfirmButton: false,
+                    timer: 3000,
                 });
             }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terjadi kesalahan saat melakukan checkout.',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan saat melakukan checkout.',
+            showConfirmButton: false,
+            timer: 3000,
         });
     });
+}
 
     function setUangPasStatus() {
     // Dapatkan elemen input uangDiterima
@@ -236,23 +256,6 @@
         );
 
         if (window.focus) newWindow.focus();
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-    const bayarButton = document.getElementById('bayar');
-    bayarButton.addEventListener('click', handleBayarClick);
-    });
-
-    function handleBayarClick(event) {
-        event.preventDefault(); // Menghentikan aksi bawaan tombol submit
-
-        const paymentMethod = document.querySelector('input[name="metode_pembayaran"]:checked').value;
-        if (paymentMethod === 'qris') {
-            $('#qrisModal').modal('show');
-        } else if (paymentMethod === 'tunai') {
-            // Navigasi ke halaman terakhir
-            window.location.href = "{{ route('penjualan.tunai') }}";
-        }
     }
 </script>
 @endpush

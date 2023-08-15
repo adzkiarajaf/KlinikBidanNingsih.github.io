@@ -22,23 +22,21 @@
                     <div class="form-group row">
                         <label for="name" class="col-lg-3 col-lg-offset-1 control-label">Nama<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
-                            <input type="text" name="name" id="name" class="form-control" required autofocus
-                            data-error="Nama  harus diisi">
+                            <input type="text" name="name" id="name" class="form-control" required autofocus oninvalid="this.setCustomValidity('Nama harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="email" class="col-lg-3 col-lg-offset-1 control-label">Email<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
-                            <input type="email" name="email" id="email" class="form-control" required autofocus
-                            data-error="Email harus diisi">
+                            <input type="email" name="email" id="email" class="form-control" required autofocus oninvalid="this.setCustomValidity('Email harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="level" class="col-lg-3 col-lg-offset-1 control-label">Role<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
-                            <select class="form-select form-control" name="level" aria-label="Default select example" id="selectRole">
+                            <select class="form-select form-control" name="level" aria-label="Default select example" id="selectRole" required autofocus oninvalid="this.setCustomValidity('Role harus diisi.')" oninput="setCustomValidity('')">
                                 <option selected> Pilih Role </option>
                                 <option value="0">Owner</option>
                                 <option value="1">Kasir</option>
@@ -49,8 +47,7 @@
                         <label for="password" class="col-lg-3 col-lg-offset-1 control-label">Password<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
                             <input type="password" name="password" id="password" class="form-control" 
-                            required minlength="6" autofocus
-                            data-error="Password Harus di isi">
+                            required autofocus oninvalid="this.setCustomValidity('Password harus diisi.')" oninput="setCustomValidity('')"minlength="6" autofocus>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
@@ -58,7 +55,7 @@
                         <label for="password_confirmation" class="col-lg-3 col-lg-offset-1 control-label">Konfirmasi Password<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
                             <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
-                                required data-match="#password">
+                            required autofocus oninvalid="this.setCustomValidity('Password  harus sesuai.')" oninput="setCustomValidity('')" data-match="#password">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>

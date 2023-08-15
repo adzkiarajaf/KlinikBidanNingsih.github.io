@@ -14,54 +14,58 @@ use PDF;
 class PenjualanController extends Controller
 {
     public function index()
-{
-    $kategori = Kategori::all();
-
-    // Jika ada parameter kategori yang diberikan, ambil produk berdasarkan kategori
-    $kategoriId = request()->input('kategori');
-    if ($kategoriId) {
-        $produkByKategori = Produk::where('id_kategori', $kategoriId)->get();
-    } else {
-        $produkByKategori = Produk::all(); // Tampilkan semua produk jika tidak ada kategori yang dipilih
+    {
+        $kategori = Kategori::pluck('nama_kategori', 'id_kategori');
+        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan')->get();
+                
+                $kategoriId = request()->input('kategori');
+                
+                if ($kategoriId && $kategoriId !== 'all') {
+                    // Jika ada parameter kategori yang diberikan dan bukan "all", ambil produk berdasarkan kategori
+                    $produkByKategori = Produk::where('id_kategori', $kategoriId)->get();
+                } else {
+                    // Tampilkan semua produk jika tidak ada kategori yang dipilih atau kategori adalah "all"
+                    $produkByKategori = Produk::all();
+                }
+                
+                
+                return view('penjualan.index', compact('kategori', 'produkByKategori'));
     }
 
-    return view('penjualan.index', compact('kategori', 'produkByKategori'));
-}
+    public function data()
+    {
+        $penjualan = Penjualan::orderBy('id_penjualan', 'desc')->get();
 
-public function data()
-{
-    $penjualan = Penjualan::orderBy('id_penjualan', 'desc')->get();
-
-    return datatables()
-        ->of($penjualan)                 
-        ->addIndexColumn()
-        ->addColumn('total_item', function ($penjualan) {
-            return format_uang($penjualan->total_item);
-        })
-        ->addColumn('total_harga', function ($penjualan) {
-            return 'Rp. '. format_uang($penjualan->total_harga);
-        })
-        ->addColumn('tanggal', function ($penjualan) {
-            return tanggal_indonesia($penjualan->created_at, false);
-        })
-        ->addColumn('metode', function ($penjualan) {
-            return ($penjualan->metode_pembayaran);
-        })
-        ->addColumn('kasir', function ($penjualan) {
-            return ($penjualan->nama_user);
-        })
-        ->addColumn('aksi', function ($penjualan) {
-            return '
-            <div class="btn-group">
+        return datatables()
+            ->of($penjualan)                 
+            ->addIndexColumn()
+            ->addColumn('total_item', function ($penjualan) {
+                return format_uang($penjualan->total_item);
+            })
+            ->addColumn('total_harga', function ($penjualan) {
+                return 'Rp. '. format_uang($penjualan->total_harga);
+            })
+            ->addColumn('tanggal', function ($penjualan) {
+                return tanggal_indonesia($penjualan->created_at, false);
+            })
+            ->addColumn('metode', function ($penjualan) {
+                return ($penjualan->metode_pembayaran);
+            })
+            ->addColumn('kasir', function ($penjualan) {
+                return ($penjualan->nama_user);
+            })
+            ->addColumn('aksi', function ($penjualan) {
+                return '
+                <div class="btn-group">
                 <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                 <button onclick="deleteData(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
-            </div>
-            ';
-        })
-        ->rawColumns(['aksi'])
-        ->make(true);
-}
-    
+                </div>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
 public function store(Request $request)
 {
     $cartItems = session('cart');
@@ -209,6 +213,8 @@ public function store(Request $request)
 
     public function processCheckout(Request $request, $id_penjualan)
     {
+
+        $total = $request->input('total');
         $penjualan = Penjualan::findOrFail($id_penjualan);
 
         // Update metode pembayaran
@@ -222,8 +228,24 @@ public function store(Request $request)
         }
 
         $penjualan->save();
-    
-        return response()->json(['message' => 'Checkout berhasil'], 200);
+
+        if ($metode_pembayaran === 'qris') {
+            // Jika metode pembayaran adalah 'qris', arahkan ke rute penjualan.qris
+            return redirect()->route('penjualan.qr', [
+                'id_penjualan' => $penjualan->id_penjualan
+            ]);
+        } elseif ($metode_pembayaran === 'tunai') {
+            // Jika metode pembayaran adalah 'tunai', arahkan ke rute penjualan.tunai
+            return redirect()->route('penjualan.tunai', [
+                'id_penjualan' => $penjualan->id_penjualan
+            ]);
+        } else {
+            // Metode pembayaran lainnya, arahkan kembali ke checkout
+            return redirect()->route('penjualan.checkout', [
+                'id_penjualan' => $penjualan->id_penjualan,
+                'total' => $total
+            ]);
+        }
     }
 
     public function notaKecil(Request $request)
@@ -285,27 +307,35 @@ public function store(Request $request)
         return response()->json(['success' => true]);
     }
 
-    public function showDetail($id)
-{
-    $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
+    public function show($id)
+    {
+        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
+    
+        return datatables()
+            ->of($detailPenjualan)
+            ->addIndexColumn()   
+            ->addColumn('nama_produk', function ($detailPenjualan) {
+                return $detailPenjualan->produk->nama_produk;
+            })
+            ->addColumn('harga_beli', function ($detailPenjualan) {
+                return 'Rp. ' . format_uang($detailPenjualan->harga_beli);
+            })
+            ->addColumn('jumlah', function ($detailPenjualan) {
+                return format_uang($detailPenjualan->jumlah);
+            })
+            ->addColumn('subtotal', function ($detailPenjualan) {
+                return 'Rp. ' . format_uang($detailPenjualan->subtotal);
+            })
+            ->rawColumns(['nama_produk']) 
+            ->make(true);
+    }
 
-    return datatables()
-        ->of($detail)
-        ->addIndexColumn()
-        ->addColumn('nama_produk', function ($detail) {
-            return $detail->produk->nama_produk;
-        })
-        ->addColumn('harga_jual', function ($detail) {
-            return 'Rp. ' . format_uang($detail->harga_jual);
-        })
-        ->addColumn('jumlah', function ($detail) {
-            return format_uang($detail->jumlah);
-        })
-        ->addColumn('subtotal', function ($detail) {
-            return 'Rp. ' . format_uang($detail->subtotal);
-        })
-        ->rawColumns(['nama_produk'])
-        ->make(true);
-}
+    public function resetAndRedirectToIndex()
+    {
+        // Reset session keranjang
+        session()->put('cart', []);
 
+        // Redirect ke penjualan.index
+        return redirect()->route('penjualan.index');
+    }
 }

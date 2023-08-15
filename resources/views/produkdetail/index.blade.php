@@ -55,22 +55,6 @@
 
 @push('scripts')
 <script>
-    $(function () {
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
-            }
-        });
-    });
-    
     function editForm(url, id_produk) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Edit Produk');
@@ -134,13 +118,6 @@
         var pathFoto = $('#modal-form [name=path_foto]')[0].files[0]; // Ambil file foto yang diunggah
 
         if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok) {
-            // Menampilkan SweetAlert dengan pesan kesalahan input kosong
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Semua input harus terisi',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
             return;
         }
 

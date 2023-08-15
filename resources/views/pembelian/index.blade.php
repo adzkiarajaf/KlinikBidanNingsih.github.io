@@ -68,12 +68,6 @@
             dom: 'Brt',
             columns: [
                 { data: 'DT_RowIndex', searchable: false, sortable: false },
-                // {
-                //     data: 'path_foto',
-                //     render: function(data, type, row) {
-                //         return '<img src="/img/' + data + '"  width="100" height="100">';
-                //     }
-                // },
                 { data: 'nama_produk' },
                 { data: 'harga_beli' },
                 { data: 'jumlah' },

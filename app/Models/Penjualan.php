@@ -15,6 +15,8 @@ class Penjualan extends Model
 
     protected $fillable = ['uuid', 'id_penjualan', 'total_harga', 'total_item', 'bayar', 'id_user'];
 
+    protected $dates = ['created_at'];
+
     public function kasir()
     {
         return $this->belongsTo(User::class, 'id_user');
@@ -22,6 +24,6 @@ class Penjualan extends Model
 
     public function penjualanDetail()
     {
-        return $this->hasMany(PenjualanDetail::class, 'id_penjualan');
+        return $this->hasMany(PenjualanDetail::class, 'id_penjualan', 'id_penjualan');
     }
 }

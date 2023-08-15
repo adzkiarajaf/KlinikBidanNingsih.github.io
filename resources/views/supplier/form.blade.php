@@ -20,24 +20,22 @@
                     <div class="form-group row">
                         <label for="nama" class="col-lg-2 col-lg-offset-1 control-label">Nama <span class="star-red">*</span></label>
                         <div class="col-lg-6">
-                            <input type="text" name="nama" id="nama" class="form-control" required autofocus
-                            data-error="Nama Supplier harus diisi">
+                            <input type="text" name="nama" id="nama" class="form-control" required autofocus oninvalid="this.setCustomValidity('Nama Supplier harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="telepon" class="col-lg-2 col-lg-offset-1 control-label">Telepon <span class="star-red">*</span></label>
                         <div class="col-lg-6">
-                            <input type="text" name="telepon" id="telepon" class="form-control" required autofocus
-                            data-error="No Telpon harus diisi">
+                            <input type="text" name="telepon" id="telepon" class="form-control" required autofocus oninvalid="this.setCustomValidity('Telepon harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="alamat" class="col-lg-2 col-lg-offset-1 control-label">Alamat <span class="star-red">*</span></label>
                         <div class="col-lg-6">
-                            <textarea name="alamat" id="alamat" rows="3" class="form-control" required autofocus
-                            data-error="Alamat Supplier harus diisi"></textarea>
+                            <textarea name="alamat" id="alamat" rows="3" class="form-control" required autofocus oninvalid="this.setCustomValidity('Alamat harus diisi.')" oninput="setCustomValidity('')">
+                            </textarea>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>

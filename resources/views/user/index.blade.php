@@ -45,22 +45,6 @@
 
 @push('scripts')
 <script>
-    $(function () {
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
-            }
-        });
-    });
-    
     // fungsi untuk menambahkan user
     function addForm(url) {
     $('#modal-form').modal('show');
@@ -74,6 +58,7 @@
     $('#password, #password_confirmation').attr('required', true);
 
     $('#btnSimpan').on('click', function() {
+
         // Periksa apakah semua input telah terisi
         var isFormValid = true;
         $('#modal-form form input').each(function() {
@@ -96,13 +81,7 @@
                 window.location.href = '{{ route('user.index') }}';
             });
         } else {
-            // Tampilkan pesan bahwa semua input harus diisi
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Harap isi semua field sebelum menyimpan data.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+            
         }
     });
 }

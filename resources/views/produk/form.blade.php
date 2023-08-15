@@ -18,16 +18,13 @@
                     <div class="form-group row">
                         <label for="nama_produk" class="col-lg-3 control-label">Nama Produk<span class="star-red">*</span></label>
                         <div class="col-lg-9">
-                            <input type="text" name="nama_produk" id="nama_produk" class="form-control" required autofocus
-                                data-error="Nama Produk  harus diisi">
-                            <span class="help-block with-errors"></span>
+                            <input type="text" name="nama_produk" id="nama_produk" class="form-control" required autofocus oninvalid="this.setCustomValidity('Nama Produk harus diisi.')" oninput="setCustomValidity('')">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="id_kategori" class="col-lg-3 control-label">Kategori<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <select name="id_kategori" id="id_kategori" class="form-control" required autofocus
-                                data-error="kategori harus diisi">
+                            <select name="id_kategori" id="id_kategori" class="form-control" required autofocus oninvalid="this.setCustomValidity('Kategori harus diisi.')" oninput="setCustomValidity('')">
                                 <option value="">Pilih Kategori</option>
                                 @foreach ($kategori as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
@@ -39,16 +36,14 @@
                     <div class="form-group row">
                         <label for="harga_jual" class="col-lg-3 control-label">Harga Jual<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" required autofocus
-                                data-error="Harga Jual harus diisi">
+                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" required autofocus oninvalid="this.setCustomValidity('Harga Jual harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="harga_beli" class="col-lg-3 control-label">Harga Beli<span class="star-red"> *</span></label>
                         <div class="col-lg-9">
-                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required autofocus
-                                data-error="Harga Beli harus diisi">
+                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required autofocus oninvalid="this.setCustomValidity('Harga Beli harus diisi.')" oninput="setCustomValidity('')">
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>

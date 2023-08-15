@@ -17,20 +17,19 @@ class ProdukController extends Controller
     
     public function index()
         {
-            $kategori = Kategori::pluck('nama_kategori', 'id_kategori'); // Mengambil semua data kategori dan membuat array dengan format [id_kategori => nama_kategori]
-        
+            $kategori = Kategori::pluck('nama_kategori', 'id_kategori');
+            
             $kategoriId = request()->input('kategori');
             
-            // Jika ada parameter kategori yang diberikan, ambil produk berdasarkan kategori
-            if ($kategoriId) {
+            if ($kategoriId && $kategoriId !== 'all') {
+                // Jika ada parameter kategori yang diberikan dan bukan "all", ambil produk berdasarkan kategori
                 $produkByKategori = Produk::where('id_kategori', $kategoriId)->get();
-                $produk = $produkByKategori; // Gunakan produk berdasarkan kategori yang telah diambil
             } else {
-                $produk = Produk::all(); // Tampilkan semua produk jika tidak ada kategori yang dipilih
-                $produkByKategori = collect(); // Buat koleksi kosong untuk produk berdasarkan kategori
+                // Tampilkan semua produk jika tidak ada kategori yang dipilih atau kategori adalah "all"
+                $produkByKategori = Produk::all();
             }
-        
-            return view('produk.index', compact('produk', 'kategori', 'produkByKategori'));
+            
+            return view('produk.index', compact('kategori', 'produkByKategori'));
         }
 
     public function data()

@@ -30,9 +30,9 @@
                         </div>
                                 <div class="box-footer">
                                     <button class="btn btn-block btn-primary" onclick="notaKecil('{{ route('penjualan.nota_kecil') }}', 'Nota Kecil')"> Print Struk</button>
-                                    <button class="btn btn-block btn-primary" type="button" onclick="reset()" id="bayar">
+                                    <a href="{{ route('penjualan.resetAndRedirectToIndex') }}" class="btn btn-block btn-primary">
                                         Kembali
-                                    </button>
+                                    </a>
                                 </div>
                                 </div>
                                 </div>
@@ -67,27 +67,6 @@
         if (window.focus) newWindow.focus();
     }
 
-    function reset() {
-        // Lakukan tindakan untuk mereset semua transaksi di sini
-        $.ajax({
-            url: '{{ route('penjualan.remove_cart') }}',
-            type: 'PATCH',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function (data) {
-                // Berhasil mereset, arahkan ke halaman awal
-                window.location.href = '{{ route('penjualan.index') }}'; // Ganti dengan URL halaman awal Anda
-            },
-            error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Gagal mereset transaksi.'
-                });
-            }
-        });
-    }
 
     function notaKecil(url, title) {
         popupCenter(url, title, 625, 500);

@@ -33,24 +33,6 @@
 
 @push('scripts')
 <script>
-    let table;
-
-    $(function () {
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
-            }
-        });
-    });
-
     function addForm(url) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Tambah Kategori');
@@ -62,16 +44,10 @@
 
     // Menambahkan event listener untuk klik tombol "Simpan"
     $('#btnSimpan').on('click', function() {
-        // Validasi form sebelum menyimpan data
+        
         var namaKategori = $('#modal-form [name=nama_kategori]').val();
         if (!namaKategori) {
             // Jika form masih kosong, tampilkan pesan kesalahan
-            Swal.fire({
-                title: 'Kesalahan',
-                text: 'Nama kategori harus diisi.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
             return;
         }
 

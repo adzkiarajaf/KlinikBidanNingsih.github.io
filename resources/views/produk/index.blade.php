@@ -33,9 +33,9 @@
 
 @section('content')
 <div class="btn-group w-100 mb-2 categories">
-    <a class="btn active" href="#" data-filter="all"> All items </a>
+    <a class="btn kategori-btn active" href="{{ route('produk.index', ['kategori' => 'all']) }}" data-filter="all"> Semua Produk  </a>
     @foreach ($kategori as $index => $item)
-        <a class="btn kategori-btn" href="{{ route('produk.index', ['kategori' => $index]) }}" data-filter="{{ $index }}">{{ $item }}</a>
+        <a class="btn kategori-btn active" href="{{ route('produk.index', ['kategori' => $index]) }}" data-filter="{{ $index }}">{{ $item }}</a>
     @endforeach
 </div>
 
@@ -45,8 +45,8 @@
 <button onclick="addForm('{{ route('produk.store') }}')" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
 @endif 
 
-@foreach ($produk as $index => $item)
-<div class="col-mb-3 mx-auto">
+@foreach ($produkByKategori as $index => $item)
+<div class="col-mb-3 mx-auto produkContainer">
     <div class="box box-widget widget-user-2">
         <div class="widget-user-header">
             <div class="widget-user-image">
@@ -76,25 +76,7 @@
 
 @push('scripts')
 <script>
-    let table;
-
-    $(function () {
-        $('#modal-form').validator().on('submit', function (e) {
-            if (! e.preventDefault()) {
-                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
-                    .done((response) => {
-                        $('#modal-form').modal('hide');
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menyimpan data');
-                        return;
-                    });
-            }
-        });
-    });
-
-    function addForm(url) {
+function addForm(url) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Tambah Produk');
     $('#modal-form form')[0].reset();
@@ -104,7 +86,8 @@
 
     $('.tampil-foto').empty();
 
-    $('#btnSimpan').on('click', function() {
+    $('#btnSimpan').off('click').on('click', function() {
+        
         // Check if any input fields are empty
         var emptyFields = $('#modal-form form').find('input, select, textarea').filter(function() {
             return !this.value.trim();
@@ -112,12 +95,6 @@
 
         if (emptyFields.length > 0) {
             // Show SweetAlert error message if any input fields are empty
-            Swal.fire({
-                title: 'Harap isi semua inputan',
-                text: 'Pastikan semua inputan telah diisi sebelum menyimpan data.',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            });
             return;
         }
         
@@ -127,12 +104,82 @@
             text: 'Produk baru telah berhasil ditambahkan.',
             icon: 'success',
             showConfirmButton: false,
-            timer: 5000 // Durasi tampilan pesan (dalam milidetik)
+            timer: 2000 // Durasi tampilan pesan (dalam milidetik)
         }).then(() => {
             // Arahkan pengguna ke halaman index
             window.location.href = '{{ route('produk.index') }}';
         });
     });
 }
+
+// Fungsi untuk menampilkan produk berdasarkan kategori
+function showProductsByCategory(KategoriId) {
+    // Lakukan permintaan AJAX untuk mengambil produk sesuai dengan kategori
+    $.ajax({
+        url: '{{ route('produk.index') }}?kategori=' + KategoriId,
+        type: 'GET',
+        dataType: 'html',
+        success: function(data) {
+            // Tampilkan produk pada wadah produkContainer
+            $('#produkContainer').html(data);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+// Tambahkan event listener untuk tombol "All items"
+const allItemsButton = document.querySelector('.btn[data-filter="all"]');
+allItemsButton.addEventListener('click', function() {
+    // Panggil fungsi untuk menampilkan semua produk
+    showProductsByCategory('all');
+});
+
+    // Ambil semua elemen tombol kategori dalam kelas .categories
+    const kategoriButtons = document.querySelectorAll('.kategori-btn');
+
+    kategoriButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Hapus kelas "active" dan "btn-info" dari semua tombol kategori
+            kategoriButtons.forEach(btn => {
+                btn.classList.remove('active', 'btn-info');
+            });
+
+            // Tambahkan kelas "active" dan "btn-info" ke tombol yang diklik
+            this.classList.add('active', 'btn-info');
+
+            // Ambil nilai data-filter dari tombol yang diklik
+            const kategoriId = this.getAttribute('data-filter');
+
+            // Lakukan permintaan AJAX untuk mengambil produk sesuai dengan kategori
+            $.ajax({
+                url: '{{ route('produk.index') }}?kategori=' + kategoriId,
+                type: 'GET',
+                dataType: 'html',
+                success: function(data) {
+                    // Tampilkan produk pada wadah produkContainer
+                    $('#produkContainer').html(data);
+                    
+                    // Simpan status aktif tombol kategori ke dalam sessionStorage
+                    sessionStorage.setItem('activeKategori', kategoriId);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        // Cek apakah ada status aktif tombol kategori yang disimpan dalam sessionStorage
+        const activeKategori = sessionStorage.getItem('activeKategori');
+        if (activeKategori) {
+            // Temukan tombol kategori yang sesuai dengan status aktif
+            const activeButton = document.querySelector(`[data-filter="${activeKategori}"]`);
+            if (activeButton) {
+                // Tambahkan kelas "active" dan "btn-info" ke tombol kategori 
+                activeButton.classList.add('active', 'btn-info');
+            }
+        }
+    });
 </script>
 @endpush

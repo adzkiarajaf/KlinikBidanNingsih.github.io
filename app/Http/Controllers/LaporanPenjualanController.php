@@ -28,8 +28,9 @@ class LaporanPenjualanController extends Controller
                         ->orderBy('id_penjualan', 'desc')
                         ->get();
 
+                        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan')->get();
 
-        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan'));
+        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan', 'detailPenjualan'));
     }
 
 

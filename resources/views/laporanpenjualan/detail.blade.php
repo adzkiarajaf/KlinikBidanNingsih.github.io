@@ -9,12 +9,24 @@
             <div class="modal-body">
                 <table class="table table-striped table-bordered table-detail">
                     <thead>
-                        <th width="5%">No</th>
-                        <th>Nama</th>
-                        <th>Harga</th>
-                        <th>Jumlah</th>
-                        <th>Subtotal</th>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Nama</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                            <th>Subtotal</th>
+                        </tr>
                     </thead>
+                    <tbody id="modal-detail-body">
+                        @foreach ($detailPenjualan as $item)
+                        <tr>
+                            <td> {{$item->produk->nama_produk }}</td>
+                            <td> Rp. {{ format_uang($item->produk->nama_produk) }}</td>
+                            <td> {{ $item->jumlah }} item</td>
+                            <td> {{ $item->subtotal }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             </div>
         </div>

@@ -25,50 +25,15 @@ class KategoriController extends Controller
             $row = array();
             $row['nama_kategori'] = $item->kategori['nama_kategori'];
         }
-        
-        // return datatables()
-        //     ->of($kategori)
-        //     ->addIndexColumn()
-        //     ->addColumn('aksi', function ($kategori) {
-        //         return '
-                
-        //             <button onclick="editForm(`'. route('kategori.update', $kategori->id_kategori) .'`)" class="btn btn-xs btn-info btn-flat ml-2"><i class="fa fa-pencil"></i></button>
-        //             <button onclick="deleteData(`'. route('kategori.destroy', $kategori->id_kategori) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
-                
-        //         ';
-        //     })
-        //     ->rawColumns(['aksi'])
-        //     ->make(true);
-        
-        
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {   
         $kategori = new Kategori();
         $kategori->nama_kategori = $request->nama_kategori;
         $kategori->save();
 
-        return response()->json([
-            'message' => 'Data berhasil disimpan',
-            'success' => true,
-        ]);
+        return redirect()->back();
     }
 
     /**

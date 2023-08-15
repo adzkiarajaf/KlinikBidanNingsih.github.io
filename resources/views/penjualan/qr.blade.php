@@ -30,9 +30,9 @@
                         </div>
                                 <div class="box-footer">
                                     <button class="btn btn-block btn-primary" onclick="notaKecil('{{ route('penjualan.nota_kecil') }}', 'Nota Kecil')"> Print Struk</button>
-                                    <button class="btn btn-block btn-primary" type="submit" onclick="window.location.href='{{ route('penjualan.index') }}'">
+                                    <a href="{{ route('penjualan.resetAndRedirectToIndex') }}" class="btn btn-block btn-primary">
                                         Kembali
-                                    </button>                                    
+                                    </a>                                   
                                 </div>
                                 </div>
                                 </div>
