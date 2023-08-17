@@ -102,19 +102,25 @@
     // Menambahkan event listener untuk klik tombol "Simpan"
     $(document).off('click', '#btnSimpan').on('click', '#btnSimpan', function (event) {
         event.preventDefault();
-        // Validasi input
+
         var namaProduk = $('#modal-form [name=nama_produk]').val();
         var idKategori = $('#modal-form [name=id_kategori]').val();
         var hargaBeli = $('#modal-form [name=harga_beli]').val();
         var hargaJual = $('#modal-form [name=harga_jual]').val();
         var stok = $('#modal-form [name=stok]').val();
-        var pathFoto = $('#modal-form [name=path_foto]')[0].files[0]; // Ambil file foto yang diunggah
+        var pathFoto = $('#modal-form [name=path_foto]')[0].files[0];
 
-        if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok) {
-            return;
+        if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok || !pathFoto) {
+            // Menampilkan SweetAlert dengan pesan input yang belum terisi
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Mohon lengkapi semua input sebelum menyimpan.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Hentikan eksekusi jika input belum terisi
         }
 
-        // Membuat objek FormData untuk mengirim data termasuk file foto
         var formData = new FormData();
         formData.append('_method', 'PUT');
         formData.append('nama_produk', namaProduk);

@@ -22,6 +22,9 @@
                 
                 <table class="table table-striped table-bordered table-detail">
                     <tbody hidden>
+                        @php
+                        krsort($groupedData);
+                        @endphp
                         @foreach ($detailPenjualans as $penjualanId => $detailPenjualanItems)
                         @foreach ($detailPenjualanItems as $index => $detailItem)
                             @php

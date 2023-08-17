@@ -9,7 +9,6 @@
         <form action="" method="post" class="form-horizontal">
             @csrf
             @method('post')
-
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -34,8 +33,7 @@
                     <div class="form-group row">
                         <label for="alamat" class="col-lg-2 col-lg-offset-1 control-label">Alamat <span class="star-red">*</span></label>
                         <div class="col-lg-6">
-                            <textarea name="alamat" id="alamat" rows="3" class="form-control" required autofocus oninvalid="this.setCustomValidity('Alamat harus diisi.')" oninput="setCustomValidity('')">
-                            </textarea>
+                            <textarea name="alamat" id="alamat" rows="3" class="form-control" required autofocus oninvalid="this.setCustomValidity('Alamat harus diisi.')" oninput="setCustomValidity('')"></textarea>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>

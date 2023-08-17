@@ -32,7 +32,6 @@
 @push('scripts')
 <script>
     function editForm(url) {
-    // Mendapatkan ID dari URL menggunakan regex atau metode lainnya
     var id_kategori = url.match(/\/(\d+)$/)[1];
 
     $('#modal-form').modal('show');
@@ -43,7 +42,6 @@
     $('#modal-form [name=_method]').val('put');
     $('#modal-form [name=nama_kategori]').focus();
 
-    // Menggunakan ID untuk mendapatkan data dari server
     $.get(url)
         .done((response) => {
             $('#modal-form [name=nama_kategori]').val(response.nama_kategori);
@@ -58,15 +56,23 @@
             });
         });
 
-        $(document).on('click', '#btnSimpan', function (event) {
-        event.preventDefault(); // Menambahkan prevent default untuk mencegah form submit
+    $(document).on('click', '#btnSimpan', function (event) {
+        event.preventDefault();
 
         // Validasi input
-        var namaKategori = $('#modal-form [name=nama_kategori').val();
-        var idKategori = $('#modal-form [name=id_kategori]').val();
+        var namaKategori = $('#modal-form [name=nama_kategori]').val();
 
         if (!namaKategori) {
+            // Menampilkan SweetAlert dengan pesan input kosong
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Nama kategori tidak boleh kosong.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Menghentikan eksekusi jika input kosong
         }
+
         // Melakukan aksi penyimpanan data ke server
         $.ajax({
             url: $('#modal-form form').attr('action'),
@@ -79,30 +85,21 @@
                     text: 'Kategori telah berhasil diubah.',
                     icon: 'success',
                     showConfirmButton: false,
-                    timer: 3000 // SweetAlert akan tampil selama 4 detik
+                    timer: 3000
                 }).then(() => {
-                    // Setelah SweetAlert tertampil selama 4 detik, arahkan pengguna ke halaman index
                     window.location.href = '{{ route('kategori.index') }}';
                 });
 
-                // Menutup modal
                 $('#modal-form').modal('hide');
-
-                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
-                // ...
             },
             error: function (xhr, status, error) {
                 // Menampilkan SweetAlert dengan pesan gagal
-                Swal.fire({
-                    title: 'Kesalahan',
-                    text: 'Tidak dapat menyimpan data kategori.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+                // ...
             }
         });
     });
 }
+
 
 
 function deleteData(url) {
