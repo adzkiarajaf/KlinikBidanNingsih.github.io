@@ -45,7 +45,6 @@
 
 @push('scripts')
 <script>
-    // fungsi untuk menambahkan user
     function addForm(url) {
     $('#modal-form').modal('show');
     $('#modal-form .modal-title').text('Tambah User');
@@ -58,7 +57,6 @@
     $('#password, #password_confirmation').attr('required', true);
 
     $('#btnSimpan').on('click', function() {
-
         // Periksa apakah semua input telah terisi
         var isFormValid = true;
         $('#modal-form form input').each(function() {
@@ -67,6 +65,11 @@
                 return false; // Hentikan perulangan jika ada input yang kosong
             }
         });
+
+            if ($('#selectRole').val() === '') {
+                isFormValid = false;
+                // Tampilkan pesan kesalahan kepada pengguna (misalnya dengan SweetAlert)
+            }
 
         if (isFormValid) {
             // Menampilkan SweetAlert jika semua input terisi
@@ -81,6 +84,7 @@
                 window.location.href = '{{ route('user.index') }}';
             });
         } else {
+            // Tampilkan pesan kesalahan kepada pengguna
             
         }
     });

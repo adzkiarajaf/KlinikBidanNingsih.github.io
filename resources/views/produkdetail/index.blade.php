@@ -88,13 +88,6 @@
             }
 
             // Menampilkan SweetAlert dengan pesan sukses setelah mendapatkan data produk
-            Swal.fire({
-                title: 'Data Produk Ditampilkan',
-                text: 'Data produk berhasil ditampilkan.',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 2000 // Durasi tampilan pesan (dalam milidetik)
-            });
         })
         .fail((errors) => {
             // Menampilkan SweetAlert dengan pesan gagal

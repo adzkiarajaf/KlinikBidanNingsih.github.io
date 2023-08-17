@@ -11,6 +11,7 @@ class LaporanPenjualanController extends Controller
 {
     public function index(Request $request)
     {
+
         $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
         $tanggalAkhir = date('Y-m-d');
 
@@ -25,12 +26,18 @@ class LaporanPenjualanController extends Controller
         
         $penjualan = Penjualan::whereDate('created_at', '>=', $tanggalAwal)
                         ->whereDate('created_at', '<=', $tanggalAkhir)
-                        ->orderBy('id_penjualan', 'desc')
+                        ->orderBy('created_at', 'desc')
                         ->get();
+                        
 
-                        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan')->get();
+        $detailPenjualans = [];
 
-        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan', 'detailPenjualan'));
+        foreach ($penjualan as $penjualanItem) {
+                        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan', $penjualanItem->id_penjualan)->get();
+                        $detailPenjualans[$penjualanItem->id_penjualan] = $detailPenjualan;
+                        }
+                        
+        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan', 'detailPenjualans'));
     }
 
 
@@ -79,5 +86,14 @@ class LaporanPenjualanController extends Controller
         return datatables()
             ->of($data)
             ->make(true);
+    }
+
+    public function show($id_penjualan)
+    {
+        $detailPenjualans = PenjualanDetail::with('produk')
+            ->where('id_penjualan', $id_penjualan)
+            ->get();
+        
+        return view('laporanpenjualan.detail', compact('detailPenjualans'));
     }
 }

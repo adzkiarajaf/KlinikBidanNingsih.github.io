@@ -84,9 +84,6 @@
 
                 // Menutup modal
                 $('#modal-form').modal('hide');
-
-                // Lakukan operasi lain seperti reload halaman atau pembaruan tampilan
-                // ...
             },
             error: function (xhr, status, error) {
                 // Menampilkan SweetAlert dengan pesan gagal

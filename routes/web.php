@@ -15,7 +15,7 @@ use App\Http\Controllers\{
     PenjualanController,
     PenjualanDetailController,
     RestokController,
-    PembayaranController,
+
     SupplierController,
     SupplierDetailController,
     UserController,
@@ -123,11 +123,12 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('penjualan/reset-and-redirect',[PenjualanController::class, 'resetAndRedirectToIndex'])->name('penjualan.resetAndRedirectToIndex');
     Route::get('/penjualan/remove_cart', [PenjualanController::class, 'remove_cart'])->name('penjualan.remove_cart');
     Route::get('/penjualan/{id}', [PenjualanController::class, 'showDetail'])->name('penjualan.show');
+    Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
     Route::resource('/penjualan', PenjualanController::class)
         ->except(['create']);
 
         
-        Route::get('/penjualan_detail/{id}/data', [PenjualanDetailController::class, 'data'])->name('penjualan_detail.data');
+    Route::get('/penjualan_detail/{id}/data', [PenjualanDetailController::class, 'data'])->name('penjualan_detail.data');
     Route::get('/penjualan_detail/{id}', [PenjualanDetailController::class, 'index'])->name('penjualan_detail.index');
     
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
@@ -141,5 +142,5 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('/laporanpenjualan', [LaporanPenjualanController::class, 'index'])->name('laporanpenjualan.index');
     Route::get('/laporanpenjualan/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'data'])->name('laporanpenjualan.data');
     Route::get('/laporanpenjualan/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('laporan.export_pdf');
-    Route::get('/laporanpenjualan/{id_penjualan}', [LaporanPenjualanController::class, 'showDetail'])->name('laporanpenjualan.show');
+    Route::get('/penjualan/{id_penjualan}', [LaporanPenjualanController::class, 'show'])->name('penjualan.show');
 });

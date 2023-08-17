@@ -16,7 +16,6 @@
             <button onclick="updatePeriode()" class="btn btn-info btn-sm btn-flat" data-toggle="modal" data-target="#modal-form">
                 <i class="fa fa-plus-circle"></i> Ubah Periode
             </button>
-            
         </div>
         <br>
         <h3 class="box-title">{{ tanggal_indonesia($tanggalAwal, false) }}
@@ -62,9 +61,11 @@
     <div class="col-lg-12">
         <div class="box">
             <div class="box-body table-responsive">
-                <table class="table table-stiped table-bordered table-penjualan">
-
+                <div>
+                    <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-sm btn-info btn-flat mb-2"><i class="fa fa-eye"></i> Detail Penjualan</button>
+                </div>
                     <br>
+                <table class="table table-stiped table-bordered table-penjualan">
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>
@@ -72,7 +73,6 @@
                         <th>Total Item</th>
                         <th>Total Harga</th>
                         <th>Metode Pembayaran</th>
-                        <th width="15%"><i class="fa fa-cog"></i></th>
                     </thead>
                 </table>
             </div>
@@ -86,8 +86,7 @@
 
 @push('scripts')
 <script>
-    
-let table, table1;
+    let table, table1;
 
     $(function () {
         table = $('.table-penjualan').DataTable({
@@ -105,7 +104,6 @@ let table, table1;
             {data: 'total_item'},
             {data: 'total_harga'},
             {data: 'metode'},
-            {data: 'aksi', searchable: false, sortable: false},
         ],
         order: [[1, 'desc']] // Mengurutkan berdasarkan kolom tanggal secara descending
     });
@@ -124,8 +122,8 @@ let table, table1;
         });
     });
 
-    function showDetail(url) {
-        $('#modal-detail').modal('show');
+    function showDetail() {
+            $('#modal-detail').modal('show');   
     }
 
     function deleteData(url) {

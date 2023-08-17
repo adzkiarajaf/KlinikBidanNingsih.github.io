@@ -15,8 +15,8 @@ class PenjualanController extends Controller
 {
     public function index()
     {
+        
         $kategori = Kategori::pluck('nama_kategori', 'id_kategori');
-        $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan')->get();
                 
                 $kategoriId = request()->input('kategori');
                 
@@ -53,14 +53,6 @@ class PenjualanController extends Controller
             })
             ->addColumn('kasir', function ($penjualan) {
                 return ($penjualan->nama_user);
-            })
-            ->addColumn('aksi', function ($penjualan) {
-                return '
-                <div class="btn-group">
-                <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
-                <button onclick="deleteData(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
-                </div>
-                ';
             })
             ->rawColumns(['aksi'])
             ->make(true);
@@ -307,7 +299,7 @@ public function store(Request $request)
         return response()->json(['success' => true]);
     }
 
-    public function show($id)
+    public function showDetail($id)
     {
         $detailPenjualan = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
     

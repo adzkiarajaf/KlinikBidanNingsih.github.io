@@ -36,8 +36,8 @@
                     <div class="form-group row">
                         <label for="level" class="col-lg-3 col-lg-offset-1 control-label">Role<span class="star-red"> *</span></label>
                         <div class="col-lg-6">
-                            <select class="form-select form-control" name="level" aria-label="Default select example" id="selectRole" required autofocus oninvalid="this.setCustomValidity('Role harus diisi.')" oninput="setCustomValidity('')">
-                                <option selected> Pilih Role </option>
+                            <select class="form-select form-control" name="level" aria-label="Default select example" id="selectRole" required autofocus oninvalid="this.setCustomValidity('Role harus diisi.')" oninput="setCustomValidity('')" aria-required="true">
+                                <option value=""> Pilih Role </option>
                                 <option value="0">Owner</option>
                                 <option value="1">Kasir</option>
                             </select>
@@ -68,3 +68,4 @@
         </form>
     </div>
 </div>
+
