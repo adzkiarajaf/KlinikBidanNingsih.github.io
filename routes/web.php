@@ -15,7 +15,7 @@ use App\Http\Controllers\{
     PenjualanController,
     PenjualanDetailController,
     RestokController,
-
+    LaporanKeuntunganController,
     SupplierController,
     SupplierDetailController,
     UserController,
@@ -137,10 +137,13 @@ Route::group(['middleware', 'auth'], function  () {
 
     Route::get('/laporanpembelian', [LaporanPembelianController::class, 'index'])->name('laporanpembelian.index');
     Route::get('/laporanpembelian/data/{awal}/{akhir}', [LaporanPembelianController::class, 'data'])->name('laporanpembelian.data');
-    Route::get('/laporanpembelian/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportPDF'])->name('laporan.export_pdf');
     
     Route::get('/laporanpenjualan', [LaporanPenjualanController::class, 'index'])->name('laporanpenjualan.index');
     Route::get('/laporanpenjualan/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'data'])->name('laporanpenjualan.data');
     Route::get('/laporanpenjualan/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('laporan.export_pdf');
     Route::get('/penjualan/{id_penjualan}', [LaporanPenjualanController::class, 'show'])->name('penjualan.show');
+
+    Route::get('/laporankeuntungan', [LaporanKeuntunganController::class, 'index'])->name('laporankeuntungan.index');
+    Route::get('/laporankeuntungan/data/{awal}/{akhir}', [LaporanKeuntunganController::class, 'data'])->name('laporankeuntungan.data');
+    Route::get('/laporankeuntungan/pdf/{awal}/{akhir}', [LaporanKeuntunganController::class, 'exportPDF'])->name('laporankeuntungan.export_pdf');
 });

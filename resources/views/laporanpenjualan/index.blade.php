@@ -43,8 +43,10 @@
     <div class="box-body" style="font-weight: bold; color: #72afd2;">
         Penjualan Keseluruhan
     </div>
-    <div class="box-footer">
-        Total Nominal Transaksi
+    <div class="box-footer" style=" ">
+        <p style="font-height: 10px;">
+            Total Nominal Transaksi
+        </p>
         <h1>
             {{ format_uang($total_penjualan) }}
         </h1>
@@ -56,6 +58,7 @@
         </h1>
     </div>
 </div>
+
 
 <div class="row">
     <div class="col-lg-12">
@@ -73,6 +76,7 @@
                         <th>Total Item</th>
                         <th>Total Harga</th>
                         <th>Metode Pembayaran</th>
+                        <th>Nama Pasien</th>
                     </thead>
                 </table>
             </div>
@@ -104,6 +108,7 @@
             {data: 'total_item'},
             {data: 'total_harga'},
             {data: 'metode'},
+            {data: 'pasien'}
         ],
         order: [[1, 'desc']] // Mengurutkan berdasarkan kolom tanggal secara descending
     });

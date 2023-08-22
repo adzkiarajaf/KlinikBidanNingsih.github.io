@@ -96,4 +96,13 @@ class LaporanPenjualanController extends Controller
         
         return view('laporanpenjualan.detail', compact('detailPenjualans'));
     }
+
+    public function exportPDF($awal, $akhir)
+    {
+        $data = $this->getData($awal, $akhir);
+        $pdf  = PDF::loadView('laporanpenjualan.pdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+        
+        return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
+    }
 }

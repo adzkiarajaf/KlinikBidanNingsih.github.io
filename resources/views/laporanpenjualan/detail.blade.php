@@ -2,8 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Detail Penjualan</h4>
             </div>
             <div class="modal-body">
@@ -12,71 +11,89 @@
                         <label for="search-id">Cari Transaksi:</label>
                         <input type="text" class="form-control" id="search-id" placeholder="">
                     </div>
-                    {{-- <button type="button" class="btn btn-primary" onclick="searchDetail()">Cari</button> --}}
                 </form>
-                
+
                 @php
-                    $groupedData = [];
-                    $currentDate = null;
+                $groupedData = [];
+                $currentDate = null;
                 @endphp
                 
+                @foreach ($detailPenjualans as $penjualanId => $detailPenjualanItems)
+                    @foreach ($detailPenjualanItems as $index => $detailItem)
+                        @php
+                            $tanggal = tanggal_indonesia($detailItem->created_at);
+                            $produkNama = $detailItem->produk->nama_produk;
+                            $harga = $detailItem->produk->harga_jual;
+                            $jumlah = $detailItem->jumlah;
+                            $subtotal = $detailItem->subtotal;
+                            $key = $detailItem->created_at->format('Y-m-d H:i:s'); // Format datetime untuk pengurutan
+
+                            if (!isset($groupedData[$key])) {
+                                $groupedData[$key] = [
+                                    'tanggal' => $tanggal,
+                                    'items' => [],
+                                    'totalJumlah' => 0,
+                                ];
+                            }
+                            
+                            // Search for the existing product within the same date
+                            $existingItemIndex = null;
+                            foreach ($groupedData[$key]['items'] as $existingIndex => $existing) {
+                                if ($existing['produkNama'] === $produkNama) {
+                                    $existingItemIndex = $existingIndex;
+                                    break;
+                                }
+                            }
+                            
+                            if ($existingItemIndex !== null) {
+                                // If the product already exists, update the quantity and subtotal
+                                $groupedData[$key]['items'][$existingItemIndex]['jumlah'] += $jumlah;
+                                $groupedData[$key]['items'][$existingItemIndex]['subtotal'] += $subtotal;
+                            } else {
+                                // If the product doesn't exist, add it to the items array
+                                $groupedData[$key]['items'][] = [
+                                    'produkNama' => $produkNama,
+                                    'harga' => $harga,
+                                    'jumlah' => $jumlah,
+                                    'subtotal' => $subtotal,
+                                ];
+                            }
+                            // Update the total quantity for the date
+                            $groupedData[$key]['totalJumlah'] += $jumlah;
+                        @endphp
+                    @endforeach
+                @endforeach
+
+                @php
+                    // Mengambil semua datetime sebagai array
+                    $allDatetimes = array_keys($groupedData);
+
+                    // Mengurutkan array datetime secara descending
+                    arsort($allDatetimes);
+
+                    // Inisialisasi variabel untuk memastikan tanggal hanya tampil satu kali
+                    $previousDate = null;
+                @endphp
+
                 <table class="table table-striped table-bordered table-detail">
                     <tbody hidden>
-                        @php
-                        krsort($groupedData);
-                        @endphp
-                        @foreach ($detailPenjualans as $penjualanId => $detailPenjualanItems)
-                        @foreach ($detailPenjualanItems as $index => $detailItem)
+                        @foreach ($allDatetimes as $datetime)
                             @php
-                                $tanggal = tanggal_indonesia($detailItem->created_at);
-                                $produkNama = $detailItem->produk->nama_produk;
-                                $harga = $detailItem->produk->harga_jual;
-                                $jumlah = $detailItem->jumlah;
-                                $subtotal = $detailItem->subtotal;
-                                $key = $tanggal;
-                                
-                                if (!isset($groupedData[$key])) {
-                                    $groupedData[$key] = [
-                                        'tanggal' => $tanggal,
-                                        'items' => [],
-                                        'totalJumlah' => 0,
-                                    ];
-                                }
-                                
-                                // Search for the existing product within the same date
-                                $existingItemIndex = null;
-                                foreach ($groupedData[$key]['items'] as $existingIndex => $existing) {
-                                    if ($existing['produkNama'] === $produkNama) {
-                                        $existingItemIndex = $existingIndex;
-                                        break;
-                                    }
-                                }
-                                
-                                if ($existingItemIndex !== null) {
-                                    // If the product already exists, update the quantity and subtotal
-                                    $groupedData[$key]['items'][$existingItemIndex]['jumlah'] += $jumlah;
-                                    $groupedData[$key]['items'][$existingItemIndex]['subtotal'] += $subtotal;
-                                } else {
-                                    // If the product doesn't exist, add it to the items array
-                                    $groupedData[$key]['items'][] = [
-                                        'produkNama' => $produkNama,
-                                        'harga' => $harga,
-                                        'jumlah' => $jumlah,
-                                        'subtotal' => $subtotal,
-                                    ];
-                                }
-                    
-                                // Update the total quantity for the date
-                                $groupedData[$key]['totalJumlah'] += $jumlah;
+                                $group = $groupedData[$datetime];
+                                $currentDate = $group['tanggal'];
                             @endphp
-                        @endforeach
-                    @endforeach
-                        @foreach ($groupedData as $date => $group)
-                            <tbody class="tanggal">
-                                <tr>
-                                    <th colspan="5">{{ $group['tanggal'] }}</th>
-                                </tr>
-                            </tbody>
+
+                            @if ($previousDate !== $currentDate)
+                                @php
+                                    $previousDate = $currentDate;
+                                @endphp
+                                <tbody class="tanggal">
+                                    <tr>
+                                        <th colspan="5">{{ $group['tanggal'] }}</th>
+                                    </tr>
+                                </tbody>
+                            @endif
+
                             <tbody class="data-detail">
                                 <tr>
                                     <th>No</th>
@@ -85,15 +102,25 @@
                                     <th>Jumlah</th>
                                     <th>Subtotal</th>
                                 </tr>
+                                @php
+                                    $itemCounter = 0;
+                                @endphp
                                 @foreach ($group['items'] as $item)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ ++$itemCounter }}</td>
                                         <td>{{ $item['produkNama'] }}</td>
                                         <td>Rp. {{ format_uang($item['harga']) }}</td>
                                         <td>{{ $item['jumlah'] }}</td>
                                         <td>Rp. {{ format_uang($item['subtotal']) }}</td>
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>Total Jumlah:</strong></td>
+                                    <td><strong>{{ $group['totalJumlah'] }}</strong></td>
+                                </tr>
                             </tbody>
                         @endforeach
                     </tbody>

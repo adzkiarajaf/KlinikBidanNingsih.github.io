@@ -36,8 +36,18 @@
     }
 
     .custom-button:hover {
-        background-color: #3c8dbc;; /* Warna latar belakang biru saat dihover */
+        background-color: #3c8dbc; /* Warna latar belakang biru saat dihover */
         color: white; /* Warna teks putih saat dihover */
+    }
+
+    .input-wrapper {
+        display: inline-block;
+        width: 60%; /* Contoh lebar 60% dari kontainer */
+        margin-left: 10px; /* Memberikan ruang antara label dan input */
+    }
+
+    .form-group p.lead {
+    margin-bottom: 5px; /* Sesuaikan jarak sesuai preferensi Anda */
     }
 </style>
 
@@ -72,7 +82,21 @@
                         <div class="col-xs-6">
                             <form action="{{ route('penjualan.processCheckout', ['id_penjualan' => $penjualanTerbaru->uuid]) }}" method="POST" id="checkout-form">
                                 @csrf
-                                <div class="form-check">
+                                <div class="form-group">
+                                    <label for="pasien" class="lead mt-2" style="font-weight: bold; color: #3c8dbc;">Nama Pasien</label>
+                                    <div class="input-wrapper">
+                                        <input
+                                            name="pasien"
+                                            type="text"
+                                            class="form-control"
+                                            id="pasien"
+                                            placeholder=""
+                                            required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pasien" class="lead mt-2" style="font-weight: bold; color: #3c8dbc;">Metode Pembayaran </label>
+                                    <br>
                                     <input class="form-check-input" type="radio" name="metode_pembayaran" id="qris" value="qris"
                                         {{ $penjualanTerbaru->metode_pembayaran === 'qris' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="qris">QRIS</label>
@@ -82,10 +106,12 @@
                                         {{ $penjualanTerbaru->metode_pembayaran === 'tunai' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="tunai">Tunai</label>
                                 </div>
-                                <p class="lead mt-2">Jumlah</p>
-                                <h3>Rp. {{ format_uang($total) }}</h3>
                                 <div class="form-group">
-                                    <label for="uangDiterima" class="lead mt-2">Uang diterima</label>
+                                    <p class="lead mt-1" style="font-weight: bold; color: #3c8dbc;">Jumlah</p>
+                                    <h3>Rp. {{ format_uang($total) }}</h3>
+                                </div>
+                                <div class="form-group">
+                                    <label for="uangDiterima" class="lead mt-2" style="font-weight: bold; color: #3c8dbc;">Uang diterima</label>
                                     <input
                                         name="uangDiterima"
                                         type="number"

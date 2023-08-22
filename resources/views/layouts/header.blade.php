@@ -41,13 +41,10 @@
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                    </div>
-                                    <div class="pull-right">
+                                    <div class="">
                                         <a
                                             href="#"
-                                            class="btn btn-default btn-flat"
+                                            class="btn btn-warning btn-flat btn-block"
                                             onclick="$('#logout-form').submit()">Sign out</a>
                                     </div>
                                 </li>

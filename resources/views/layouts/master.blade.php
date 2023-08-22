@@ -52,7 +52,6 @@
         <link
             rel="stylesheet"
             href="{{ asset('AdminLTE-2/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
-
         <!-- Data Table -->
         <link
             rel="stylesheet"
@@ -71,7 +70,6 @@
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Metal&display=swap">
-
         @stack('css')
     </head>
 
@@ -185,7 +183,6 @@
         <!-- Include Bootstrap Datepicker -->
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
         <script>
             function preview(selector, temporaryFile, width = 200) {
                 $(selector).empty();

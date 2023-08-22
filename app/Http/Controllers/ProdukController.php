@@ -43,6 +43,7 @@ class ProdukController extends Controller
             $row['harga_jual'] = $item->harga_jual;
             $row['stok'] = $item->stok;
             $row['path_foto'] = $item->path_foto;
+            $row['expired']=$item->expired;
             $data[] = $row;
         }
 
@@ -90,7 +91,9 @@ class ProdukController extends Controller
         $produk->harga_jual = $request->harga_jual;
         $produk->harga_beli = $request->harga_beli;
         $produk->stok = $request->stok;
+        $produk->expired = $request->expired;
         $produk->kode_produk = $nextKodeProduk;
+        
         
         if ($request->hasFile('path_foto')) {
             $file = $request->file('path_foto');
@@ -147,6 +150,7 @@ class ProdukController extends Controller
             'id_kategori' => $request->id_kategori,
             'harga_jual' => $request->harga_jual,
             'harga_beli' => $request->harga_beli,
+            'expired'=>$request->expired, 
             'stok' => $request->stok,
         ]);
 

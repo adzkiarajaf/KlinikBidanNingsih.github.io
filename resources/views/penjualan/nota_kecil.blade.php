@@ -25,17 +25,57 @@
             text-align: right;
         }
 
+                /* Pusatkan teks */
+        .text-center {
+            text-align: center;
+        }
+
+        /* Pusatkan tabel di tengah halaman */
+        table {
+            margin: 0 auto;
+        }
+
+        /* Ukuran font dan jarak antar elemen */
+        p {
+            margin: 5px;
+            font-size: 10pt;
+        }
+
+        table td {
+            font-size: 9pt;
+        }
+
+        /* Padding pada elemen utama */
+        body {
+            padding: 10px;
+            justify-content:  flex;
+            margin: 20px 10px;
+        }
+
+        /* Gaya tombol cetak */
+        .btn-print {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            display: none; /* Sembunyikan tombol cetak saat cetak */
+        }
+
+        /* Media cetak */
         @media print {
             @page {
                 margin: 0;
-                size: 75mm;
+                size: A7; /* Ganti dengan ukuran kertas yang diinginkan */
             }
             html, body {
-                width: 70mm;
+                width: A6; /* Sesuaikan ukuran kertas */
+            }
+            body {
+                padding: 0;
             }
             .btn-print {
-                display: none;
+                display: block; /* Tampilkan tombol cetak */
             }
+            /* ... (gaya lainnya) */
         }
     </style>
 </head>

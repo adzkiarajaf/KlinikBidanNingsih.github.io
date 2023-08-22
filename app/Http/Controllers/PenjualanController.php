@@ -82,6 +82,7 @@ public function store(Request $request)
     $penjualan->total_harga = $total;
     $penjualan->total_item = $totalqty;
     $penjualan->bayar = 0;
+    $penjualan->pasien="-";
     $penjualan-> nama_user = auth()->user()->name;
 
     $metodePembayaran = $request->input('metode_pembayaran');
@@ -216,6 +217,8 @@ public function store(Request $request)
         if ($metode_pembayaran !== 'qris') {
             // Jika metode pembayaran bukan 'qris', update nilai "bayar"
             $uang_diterima = $request->input('uangDiterima');
+            $pasien = $request->input('pasien');
+            $penjualan->pasien = $pasien;
             $penjualan->bayar = $uang_diterima;
         }
 

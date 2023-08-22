@@ -21,7 +21,7 @@
 <div class="btn-group w-100 mb-2 categories">
     <a class="btn kategori-btn active" href="{{ route('penjualan.index', ['kategori' => 'all']) }}" data-filter="all"> Semua Produk  </a>
     @foreach ($kategori as $index => $item)
-        <a class="btn kategori-btn active" href="{{ route('penjualan.index', ['kategori' => $index]) }}" data-filter="{{ $index }}">{{ $item }}</a>
+    <a class="btn kategori-btn active" href="{{ route('penjualan.index', ['kategori' => $index]) }}" data-filter="{{ $index }}">{{ $item }}</a>
     @endforeach
 </div>
 

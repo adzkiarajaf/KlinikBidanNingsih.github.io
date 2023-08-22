@@ -62,6 +62,13 @@
                             <div class="tampil-foto"></div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="stok" class="col-lg-3 control-label">Expired Date<span class="star-red"> *</span></label>
+                        <div class="col-lg-9">
+                            <input type="date" name="expired" id="expired" class="form-control"  required autofocus oninvalid="this.setCustomValidity('Expired harus diisi.')" oninput="setCustomValidity('')">
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-primary" id="btnSimpan"><i class="fa fa-save"></i> Simpan</button>

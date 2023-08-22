@@ -24,6 +24,7 @@
             <div class="widget-user-details">
                 <h3 class="widget-user-username">{{ $item->nama_produk }}</h3>
                 <h5 class="widget-user-desc">Stok: {{ $item->stok }}</h5>
+                <h5 class="widget-user-desc">Expired Date: {{ $item->expired  }}</h5>
             </div>
         </div>
                 

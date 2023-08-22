@@ -24,46 +24,12 @@
             Laporan Pembelian
             <i class="fa fa-chevron-right" aria-hidden="true" style="float: right;"></i>
         </a>
+        <a href="{{ route('laporankeuntungan.index') }}" class="list-group-item">
+            Laporan Keuntungan
+            <i class="fa fa-chevron-right" aria-hidden="true" style="float: right;"></i>
+        </a>
     </div>
 </div>
 
 @includeIf('laporan.form')
 @endsection
-
-@push('scripts')
-<script src="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<script>
-    let table;
-
-    $(function () {
-        table = $('.table').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('laporan.data', [$tanggalAwal, $tanggalAkhir]) }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'tanggal'},
-                {data: 'penjualan'},
-                {data: 'pembelian'},
-                {data: 'pendapatan'}
-            ],
-            dom: 'Brt',
-            bSort: false,
-            bPaginate: false,
-        });
-
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
-    });
-
-    function updatePeriode() {
-        $('#modal-form').modal('show');
-    }
-</script>
-@endpush

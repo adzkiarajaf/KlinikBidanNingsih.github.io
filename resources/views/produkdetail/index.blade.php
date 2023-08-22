@@ -40,6 +40,11 @@
                 <label for="disabledTextInput" class="form-label">Harga Beli</label>
                 <input type="text" id="disabledTextInput" class="form-control" value="{{ $produk->harga_beli }} -/pcs" readonly>
             </div>
+            <br>  
+            <div class="mb-3">
+                <label for="disabledTextInput" class="form-label">Expired Date</label>
+                <input type="text" id="disabledTextInput" class="form-control" value="{{ tanggal_indonesia($produk->expired) }}" readonly>
+            </div>
         </fieldset>
     </form>
 </div>
@@ -72,6 +77,7 @@
             $('#modal-form [name=harga_beli]').val(response.harga_beli);
             $('#modal-form [name=harga_jual]').val(response.harga_jual);
             $('#modal-form [name=stok]').val(response.stok);
+            $('#moodal-form [name=expired]').val(response.expired);
 
             // Tambahkan kode untuk menghapus atribut disabled pada input file foto
             $('#modal-form [name=path_foto]').removeAttr('disabled');
@@ -108,6 +114,7 @@
         var hargaBeli = $('#modal-form [name=harga_beli]').val();
         var hargaJual = $('#modal-form [name=harga_jual]').val();
         var stok = $('#modal-form [name=stok]').val();
+        var expired = $('modal-form [name=expired]').val();
         var pathFoto = $('#modal-form [name=path_foto]')[0].files[0];
 
         if (!namaProduk || !idKategori || !hargaBeli || !hargaJual || !stok || !pathFoto) {
@@ -128,6 +135,7 @@
         formData.append('harga_jual', hargaJual);
         formData.append('harga_beli', hargaBeli);
         formData.append('stok', stok);
+        formData.append('expired'.expired)
         formData.append('path_foto', pathFoto);
 
         // Melakukan aksi penyimpanan data ke server
