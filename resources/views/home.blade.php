@@ -131,26 +131,6 @@
                                         </div>
                                     </div>
                                     @endif
-                                    @if (auth()->check() && auth()->user()->level == '0')
-                                    <!-- ./col -->
-                                    <div class="col-lg-3 col-xs-6">
-                                        <!-- small box -->
-                                        <div class="small-box bg-primary">
-                                            <div class="inner">
-                                                <h3>
-                                                    <i class="fa fa-truck"></i>
-                                                </h3>
-                                                <p>Supplier Management</p>
-                                            </div>
-                                            <div class="icon">
-                                                <i class="fa fa-truck"></i>
-                                            </div>
-                                            <a href="{{ route('supplier.index') }}" class="small-box-footer">More info
-                                                <i class="fa fa-arrow-circle-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    @endif
                                     @if (auth()->check() && auth()->user()->level == '1')
                                     <!-- ./col -->
                                     <div class="col-lg-3 col-xs-6">

@@ -35,6 +35,7 @@
                 </div>
                 <div class="widget-user-details">
                     <h3 class="widget-user-username">{{ $produk->nama_produk }}</h3>
+                    <h5 class="widget-user-desc">ED : {{ $produk->expired}}</h5>
                     <h5 class="widget-user-desc">Harga: Rp.{{ format_uang($produk->harga_jual)}}</h5>
                 </div>
             </div>

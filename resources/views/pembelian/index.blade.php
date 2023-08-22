@@ -24,7 +24,6 @@
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>
-                        <th>Supplier</th>
                         <th>Total Item</th>
                         <th>Total Harga</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
@@ -57,7 +56,6 @@
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
                 {data: 'tanggal'},
-                {data: 'supplier'},
                 {data: 'total_item'},
                 {data: 'total_harga'},
                 {data: 'aksi', searchable: false, sortable: false},

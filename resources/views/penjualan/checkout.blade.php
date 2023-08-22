@@ -95,16 +95,19 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pasien" class="lead mt-2" style="font-weight: bold; color: #3c8dbc;">Metode Pembayaran </label>
-                                    <br>
-                                    <input class="form-check-input" type="radio" name="metode_pembayaran" id="qris" value="qris"
+                                    <div>
+                                        <label for="metode Pembayaran" class="lead" style="font-weight: bold; color: #3c8dbc;">Metode Pembayaran</label>
+                                    </div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="metode_pembayaran" id="qris" value="qris"
                                         {{ $penjualanTerbaru->metode_pembayaran === 'qris' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="qris">QRIS</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="metode_pembayaran" id="tunai" value="tunai"
+                                        <label class="form-check-label" for="qris">QRIS</label>
+                                    </div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="metode_pembayaran" id="tunai" value="tunai"
                                         {{ $penjualanTerbaru->metode_pembayaran === 'tunai' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="tunai">Tunai</label>
+                                        <label class="form-check-label" for="tunai">Tunai</label>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <p class="lead mt-1" style="font-weight: bold; color: #3c8dbc;">Jumlah</p>

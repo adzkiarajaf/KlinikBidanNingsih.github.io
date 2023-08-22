@@ -44,19 +44,30 @@
     <div class="box-body" style="font-weight: bold; color: #72afd2;">
         Penjualan Keseluruhan
     </div>
-    <div class="box-footer" style=" ">
-        <p style="font-height: 10px;">
-            Total Nominal Transaksi
-        </p>
-        <h1>
-            {{ format_uang($total_penjualan) }}
-        </h1>
+    <div class="box-container" style="display: flex; flex-direction: row;">
+        <div class="box-footer" style="flex: 1;">
+            <p style="font-height: 10px;">
+                Total Nominal Transaksi
+            </p>
+            <h1>
+                Rp. {{ format_uang($total_penjualan) }}
+            </h1>
+        </div>
+        <div class="box-footer" style="flex: 1;">
+            <p style="font-height: 10px;">
+                Total  Keuntungan
+            </p>
+            <h1>
+                Rp.  {{ format_uang($total_penjualan - $total_pembelian) }}
+            </h1>
+        </div>
     </div>
     <div class="box-footer">
         Jumlah Transaksi
         <h1>
-            {{ $penjualan->count() }}
+            {{ $penjualan->count() }} 
         </h1>
+    </div>
     </div>
 </div>
 

@@ -54,6 +54,7 @@
             </div>
             <div class="widget-user-details">
                 <h3 class="widget-user-username">{{ $item->nama_produk }}</h3>
+                <h5 class="widget-user-desc">ED: {{ $item->expired }}</h5>
                 <h5 class="widget-user-desc">Stok: {{ $item->stok }}</h5>
             </div>
         </div>
@@ -98,7 +99,7 @@ function addForm(url) {
             return;
         }
         // Check for duplicate input
-        var existingProduk = {!! json_encode($user->pluck('nama_produk')) !!};
+        var existingProduk = {!! json_encode($produkByKategori->pluck('nama_produk')) !!};
         if (existingProduk.includes(namaProduk)) {
             // Jika Produk sudah ada, tampilkan pesan kesalahan menggunakan SweetAlert
             Swal.fire({

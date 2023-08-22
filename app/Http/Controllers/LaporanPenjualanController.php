@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penjualan;
+use App\Models\Pembelian;
 use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
 use PDF;
@@ -30,7 +31,17 @@ class LaporanPenjualanController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
                         
+        $total_pembelian = Pembelian::whereDate('created_at', '>=', $tanggalAwal)
+                        ->whereDate('created_at', '<=', $tanggalAkhir)
+                        ->sum('bayar');
 
+        $pembelian = Pembelian::whereDate('created_at', '>=', $tanggalAwal)
+                    ->whereDate('created_at', '<=', $tanggalAkhir)
+                    ->orderBy('id_pembelian', 'desc')
+                    ->with('supplier')
+                    ->get();
+
+        
         $detailPenjualans = [];
 
         foreach ($penjualan as $penjualanItem) {
@@ -38,7 +49,7 @@ class LaporanPenjualanController extends Controller
                         $detailPenjualans[$penjualanItem->id_penjualan] = $detailPenjualan;
                         }
                         
-        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan', 'detailPenjualans'));
+        return view('laporanpenjualan.index', compact('tanggalAwal', 'tanggalAkhir', 'total_penjualan', 'penjualan', 'detailPenjualans', 'total_pembelian', 'pembelian'));
     }
 
 
