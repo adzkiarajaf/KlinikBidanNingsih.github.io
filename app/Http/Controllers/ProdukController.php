@@ -83,6 +83,14 @@ class ProdukController extends Controller
         $request->validate([
             'kode_produk' => 'unique:produk',
         ]);
+
+        $namaProduk = $request->nama_produk;
+
+           // Check for duplicate Produk
+        $existingProduk = Produk::where('nama_produk', $namaProduk)->first();
+        if ($existingProduk) {
+            return redirect()->back()->withErrors(['nama_produk' => 'Produk dengan nama yang sama sudah ada.']);
+        }
         
         $produk = new Produk();
         
@@ -104,7 +112,7 @@ class ProdukController extends Controller
         }
         
         $produk->save();
-        return redirect()->back();
+        return redirect()->route('produk.index'); 
     }
 
 

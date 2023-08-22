@@ -34,26 +34,39 @@
 @push('scripts')
 <script>
     function addForm(url) {
-    $('#modal-form').modal('show');
-    $('#modal-form .modal-title').text('Tambah Kategori');
+        $('#modal-form').modal('show');
+        $('#modal-form .modal-title').text('Tambah Kategori');
 
-    $('#modal-form form')[0].reset();
-    $('#modal-form form').attr('action', url);
-    $('#modal-form [name=_method]').val('post');
-    $('#modal-form [name=nama_kategori]').focus();
+        $('#modal-form form')[0].reset();
+        $('#modal-form form').attr('action', url);
+        $('#modal-form [name=_method]').val('post');
+        $('#modal-form [name=nama_kategori]').focus();
 
-    // Menambahkan event listener untuk klik tombol "Simpan"
+       // ...
     $('#btnSimpan').on('click', function() {
-        
-        var namaKategori = $('#modal-form [name=nama_kategori]').val();
-        if (!namaKategori) {
-            // Jika form masih kosong, tampilkan pesan kesalahan
-            return;
-        }
+    var namaKategori = $('#modal-form [name=nama_kategori]').val();
+    
+    if (!namaKategori) {
+        // Jika form masih kosong, tampilkan pesan kesalahan di dalam modal
+        return;
+    }
 
-        // Jika form sudah diisi, lanjutkan dengan menyimpan data
-        // Menampilkan SweetAlert sebelum menyimpan data
+    // Check for duplicate input
+    var existingCategories = {!! json_encode($kategori->pluck('nama_kategori')) !!};
+    if (existingCategories.includes(namaKategori)) {
+        // Jika kategori sudah ada, tampilkan pesan kesalahan di dalam modal
         Swal.fire({
+            title: 'Data Sudah Ada',
+            text: 'Kategori dengan nama yang sama sudah ada.',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+        });
+        return; // Prevent form submission
+    }
+
+    // Jika form sudah diisi dan tidak ada duplicate, lanjutkan dengan menyimpan data
+    // Menampilkan SweetAlert sebelum menyimpan data
+    Swal.fire({
             title: 'Kategori Berhasil Ditambahkan',
             text: 'Kategori baru telah berhasil ditambahkan.',
             icon: 'success',
@@ -67,3 +80,4 @@
 }
 </script>
 @endpush
+

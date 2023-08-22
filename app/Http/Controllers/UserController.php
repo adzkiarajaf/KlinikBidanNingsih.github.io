@@ -45,6 +45,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
+        $namaUser= $request->name;
+        // Check for duplicate User
+        $existingUser = User::where('name', $namaUser)->first();
+        if ($existingUser) {
+            return redirect()->back()->withErrors(['name' => 'User dengan nama yang sama sudah ada.']);
+        }
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -57,7 +65,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->back();
+        return redirect()->route('kategori.index'); 
     }
 
     /**

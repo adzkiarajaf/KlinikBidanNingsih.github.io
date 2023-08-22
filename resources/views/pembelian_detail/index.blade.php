@@ -49,20 +49,7 @@
     <div class="col-lg-12">
         <div class="box">
             <div class="box-header with-border">
-                <table>
-                    <tr>
-                        <td>Supplier</td>
-                        <td>: {{ $supplier->nama }}</td>
-                    </tr>
-                    <tr>
-                        <td>Telepon</td>
-                        <td>: {{ $supplier->telepon }}</td>
-                    </tr>
-                    <tr>
-                        <td>Alamat</td>
-                        <td>: {{ $supplier->alamat }}</td>
-                    </tr>
-                </table>
+                
             </div>
             <div class="box-body">
                     

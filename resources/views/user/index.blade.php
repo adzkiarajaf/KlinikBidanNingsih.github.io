@@ -57,6 +57,7 @@
     $('#password, #password_confirmation').attr('required', true);
 
     $('#btnSimpan').on('click', function() {
+        var namaUser = $('#modal-form [name=name]').val();
         // Periksa apakah semua input telah terisi
         var isFormValid = true;
         $('#modal-form form input').each(function() {
@@ -70,6 +71,19 @@
                 isFormValid = false;
                 // Tampilkan pesan kesalahan kepada pengguna (misalnya dengan SweetAlert)
             }
+
+        // Check for duplicate input
+        var existingUser = {!! json_encode($user->pluck('name')) !!};
+        if (existingUser.includes(namaUser)) {
+            // Jika kategori sudah ada, tampilkan pesan kesalahan di dalam modal
+            Swal.fire({
+                title: 'Data Sudah Ada',
+                text: 'User dengan nama yang sama sudah ada.',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return; // Prevent form submission
+        }
 
         if (isFormValid) {
             // Menampilkan SweetAlert jika semua input terisi

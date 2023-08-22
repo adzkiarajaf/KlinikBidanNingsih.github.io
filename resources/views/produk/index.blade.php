@@ -87,7 +87,7 @@ function addForm(url) {
     $('.tampil-foto').empty();
 
     $('#btnSimpan').off('click').on('click', function() {
-        
+        var namaProduk = $('#modal-form [name=nama_produk]').val(); // Ambil nilai nama produk
         // Check if any input fields are empty
         var emptyFields = $('#modal-form form').find('input, select, textarea').filter(function() {
             return !this.value.trim();
@@ -96,6 +96,18 @@ function addForm(url) {
         if (emptyFields.length > 0) {
             // Show SweetAlert error message if any input fields are empty
             return;
+        }
+        // Check for duplicate input
+        var existingProduk = {!! json_encode($user->pluck('nama_produk')) !!};
+        if (existingProduk.includes(namaProduk)) {
+            // Jika Produk sudah ada, tampilkan pesan kesalahan menggunakan SweetAlert
+            Swal.fire({
+                title: 'Data Sudah Ada',
+                text: 'Produk dengan nama yang sama sudah ada.',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return; // Prevent form submission
         }
         
         // Menampilkan SweetAlert sebelum menyimpan data

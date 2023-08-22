@@ -28,13 +28,23 @@ class KategoriController extends Controller
     }
     
     public function store(Request $request)
-    {   
+    {    
+        $namaKategori = $request->nama_kategori;
+    
+        // Check for duplicate category
+        $existingCategory = Kategori::where('nama_kategori', $namaKategori)->first();
+        if ($existingCategory) {
+            return redirect()->back()->withErrors(['nama_kategori' => 'Kategori dengan nama yang sama sudah ada.']);
+        }
+    
+        // Create and save the new category
         $kategori = new Kategori();
-        $kategori->nama_kategori = $request->nama_kategori;
+        $kategori->nama_kategori = $namaKategori;
         $kategori->save();
-
-        return redirect()->back();
+    
+        return redirect()->route('kategori.index'); 
     }
+
 
     /**
      * Display the specified resource.

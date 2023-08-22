@@ -74,14 +74,6 @@
                 @endif 
                 @if (auth()->check() && auth()->user()->level == '0')
                 <li>
-                    <a href="{{ route('supplier.index') }}">
-                        <i class="fa fa-truck"></i>
-                        <span>Suplier Management</span>
-                    </a>
-                </li>
-                @endif
-                @if (auth()->check() && auth()->user()->level == '0')
-                <li>
                     <a href="{{ route('laporan.index') }}">
                         <i class="fa fa-file-text" aria-hidden="true"></i>
                         <span>Laporan</span>

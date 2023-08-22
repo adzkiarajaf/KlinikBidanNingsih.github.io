@@ -52,6 +52,7 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
     Route::get('/kategori/data', [KategoriController::class, 'data'])->name('kategori.data');
     Route::resource('/kategori', KategoriController::class);
+    Route::post('/kategori/check-duplicate', [KategoriController::class, 'checkDuplicate'])->name('kategori.check_duplicate');
 
     Route::get('/kategoridetail/{id}', [KategoriDetailController::class, 'show'])->name('kategoridetail.show');
     Route::get('/kategoridetail/{id}', [KategoriDetailController::class, 'index'])->name('kategoridetail.index');
@@ -97,7 +98,7 @@ Route::group(['middleware', 'auth'], function  () {
     Route::resource('/pengeluaran', PengeluaranController::class);
 
     Route::get('/pembelian/data', [PembelianController::class, 'data'])->name('pembelian.data');
-    Route::get('/pembelian/{id}/create', [PembelianController::class, 'create'])->name('pembelian.create');
+    Route::get('/pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create');
     Route::resource('/pembelian', PembelianController::class)
         ->except('create');
 
