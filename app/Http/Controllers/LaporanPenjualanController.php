@@ -6,6 +6,7 @@ use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
 use PDF;
+use Illuminate\Http\Response;
 
 class LaporanPenjualanController extends Controller
 {
@@ -97,12 +98,26 @@ class LaporanPenjualanController extends Controller
         return view('laporanpenjualan.detail', compact('detailPenjualans'));
     }
 
-    public function exportPDF($awal, $akhir)
+    public function exportPDF($tanggalAwal, $tanggalAkhir)
     {
-        $data = $this->getData($awal, $akhir);
-        $pdf  = PDF::loadView('laporanpenjualan.pdf', compact('awal', 'akhir', 'data'));
-        $pdf->setPaper('a4', 'potrait');
-        
-        return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
+        $penjualan = Penjualan::whereBetween('created_at', [$tanggalAwal, $tanggalAkhir])
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        $total_penjualan = $penjualan->sum('total_harga');
+
+        $pdf = PDF::loadView('laporanpenjualan.pdf', compact('penjualan', 'total_penjualan', 'tanggalAwal', 'tanggalAkhir'));
+
+        $pdf->setPaper('A4', 'portrait');
+
+        $stream = $pdf->stream();
+
+        $response = new Response($stream, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="laporan_penjualan.pdf"'
+        ]);
+
+        return $response;
     }
+
 }

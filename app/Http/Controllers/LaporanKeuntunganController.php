@@ -75,13 +75,9 @@ class LaporanKeuntunganController extends Controller
     public function exportPDF($awal, $akhir)
     {
         $data = $this->getData($awal, $akhir);
-
         $pdf  = PDF::loadView('laporankeuntungan.pdf', compact('awal', 'akhir', 'data'));
-        $pdf->setPaper('a4', 'portrait');
-
-        $filePath = public_path('laporan_keuntungan.pdf'); 
-        $pdf->save($filePath); 
-
-        return response()->download($filePath)->deleteFileAfterSend(true);
+        $pdf->setPaper('a4', 'potrait');
+        
+        return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
     }
 }

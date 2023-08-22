@@ -32,25 +32,29 @@
             <tr>
                 <th>No</th>
                 <th>Tanggal</th>
-                <th>Supplier</th>
+                <th>Kasir</th>
                 <th>Total Item</th>
                 <th>Total Harga</th>
+                <th>Metode Pembayaran</th>
+                <th>Nama Pasien</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($pembelian as $index => $item)
+            @foreach ($penjualan as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ tanggal_indonesia($item->created_at) }}</td>
-                    <td>{{ $item->supplier->nama }}</td>
+                    <td>{{ $item->nama_user }}</td>
                     <td>{{ $item->total_item }}</td>
                     <td>{{ format_uang($item->total_harga) }}</td>
+                    <td>{{ $item->metode_pembayaran }}</td>
+                    <td>{{ $item->pasien }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <p>Total Nominal Transaksi: {{ format_uang($total_pembelian) }}</p>
-    <p>Jumlah Transaksi: {{ $pembelian->count() }}</p>
+    <p>Total Nominal Transaksi: {{ format_uang($total_penjualan) }}</p>
+    <p>Jumlah Transaksi: {{ $penjualan->count() }}</p>
 </body>
 </html>

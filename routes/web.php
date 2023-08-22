@@ -124,6 +124,7 @@ Route::group(['middleware', 'auth'], function  () {
     Route::get('/penjualan/remove_cart', [PenjualanController::class, 'remove_cart'])->name('penjualan.remove_cart');
     Route::get('/penjualan/{id}', [PenjualanController::class, 'showDetail'])->name('penjualan.show');
     Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
+    
     Route::resource('/penjualan', PenjualanController::class)
         ->except(['create']);
 
@@ -137,10 +138,11 @@ Route::group(['middleware', 'auth'], function  () {
 
     Route::get('/laporanpembelian', [LaporanPembelianController::class, 'index'])->name('laporanpembelian.index');
     Route::get('/laporanpembelian/data/{awal}/{akhir}', [LaporanPembelianController::class, 'data'])->name('laporanpembelian.data');
+    Route::get('/laporanpembelian/export-pdf/{tanggalAwal}/{tanggalAkhir}', [LaporanPembelianController::class, 'exportPDF'])->name('laporanpembelian.export_pdf');
     
     Route::get('/laporanpenjualan', [LaporanPenjualanController::class, 'index'])->name('laporanpenjualan.index');
     Route::get('/laporanpenjualan/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'data'])->name('laporanpenjualan.data');
-    Route::get('/laporanpenjualan/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('laporan.export_pdf');
+    Route::get('/laporanpenjualan/export-pdf/{tanggalAwal}/{tanggalAkhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('laporanpenjualan.export_pdf');
     Route::get('/penjualan/{id_penjualan}', [LaporanPenjualanController::class, 'show'])->name('penjualan.show');
 
     Route::get('/laporankeuntungan', [LaporanKeuntunganController::class, 'index'])->name('laporankeuntungan.index');

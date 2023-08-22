@@ -16,6 +16,7 @@
             <button onclick="updatePeriode()" class="btn btn-info btn-sm btn-flat" data-toggle="modal" data-target="#modal-form">
                 <i class="fa fa-plus-circle"></i> Ubah Periode
             </button>
+            <a href="{{ route('laporanpenjualan.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-sm btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
         </div>
         <br>
         <h3 class="box-title">{{ tanggal_indonesia($tanggalAwal, false) }}

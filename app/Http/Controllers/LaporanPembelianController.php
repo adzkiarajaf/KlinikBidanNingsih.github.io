@@ -7,6 +7,7 @@ use App\Models\PembelianDetail;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use PDF;
+use Illuminate\Http\Response;
 
 class LaporanPembelianController extends Controller
 {
@@ -103,5 +104,24 @@ class LaporanPembelianController extends Controller
             })
             ->rawColumns(['kode_produk'])
             ->make(true);
+    }
+
+    public function exportPDF($tanggalAwal, $tanggalAkhir)
+    {
+        $pembelian = Pembelian::whereBetween('created_at', [$tanggalAwal, $tanggalAkhir])->get();
+        $total_pembelian = $pembelian->sum('total_harga');
+
+        $pdf = PDF::loadView('laporanpembelian.pdf', compact('pembelian', 'total_pembelian', 'tanggalAwal', 'tanggalAkhir'));
+
+        $pdf->setPaper('A4', 'potrait'); // Atur ukuran kertas dan orientasi
+
+        $stream = $pdf->stream(); // Menghasilkan stream dari PDF
+
+        $response = new Response($stream, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="laporan_pembelian.pdf"'
+        ]);
+
+        return $response;
     }
 }
